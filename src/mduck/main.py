@@ -5,13 +5,14 @@ from fastapi import FastAPI
 
 from mduck.containers.application import ApplicationContainer
 from mduck.routers import healthcheck
+from mduck.version import __version__
 
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
     container = ApplicationContainer()
 
-    app = FastAPI()
+    app = FastAPI(version=__version__)
     app.state.container = container
     app.include_router(healthcheck.router)
     return app
