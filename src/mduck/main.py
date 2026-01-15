@@ -3,12 +3,16 @@ import argparse
 import uvicorn
 from fastapi import FastAPI
 
+from mduck.containers.application import ApplicationContainer
 from mduck.routers import healthcheck
 
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
+    container = ApplicationContainer()
+
     app = FastAPI()
+    app.state.container = container
     app.include_router(healthcheck.router)
     return app
 

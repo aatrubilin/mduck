@@ -47,7 +47,8 @@ poetry run pytest --cov=src/mduck
 
 *   All Python source code should be placed within the `src/mduck` directory.
 *   Tests should be placed in the `tests/` directory. The structure of the `tests` directory should mirror the `src/mduck` directory.
-*   Dependencies are managed via the `pyproject.toml` file. To add a new dependency, use:
+*   **Dependencies**
+    Dependencies are managed via the `pyproject.toml` file. To add a new dependency, use:
     ```bash
     poetry add <package-name>
     ```
@@ -56,11 +57,14 @@ poetry run pytest --cov=src/mduck
     poetry add --group dev <package-name>
     ```
 
+*   **Import Paths**
+    When importing modules, treat the `src` directory as the project root. For example, to import `settings` from `src/config/settings.py`, use `from config.settings import settings`. Similarly, for modules within `src/mduck`, use `from mduck.<module> import ...`. Do not prefix imports with `src.`.
+
 *   **Commit Messages**
     This project follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification. All commit messages should adhere to this format.
 
 *   **Type Annotations**
-    All functions must have type annotations for arguments and return values. This is enforced by `mypy`.
+    All code must use type annotations wherever possible, including function arguments, return values, and class attributes. This is enforced by `mypy`.
 
 *   **Linting and Formatting**
     To lint and format the code using `ruff`:
