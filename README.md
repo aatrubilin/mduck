@@ -1,4 +1,6 @@
-# MooDuck Bot (`mduck`)
+[![Made with Gemini](https://img.shields.io/badge/Made%20with-Gemini-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://gemini.google.com)
+
+# MooDuck Bot `mduck`
 
 A caustic Telegram bot service.
 
@@ -24,14 +26,20 @@ poetry install
 
 ### Running the Application
 
-To run the application locally, use the following command:
+To run the webhook application locally, use the following command:
 
 ```bash
-poetry run api --host 0.0.0.0 --port 8000 --reload --log-level info
+poetry run run-webhook --host 0.0.0.0 --port 8000 --reload --log-level info
 ```
 
-The application will be available at `http://0.0.0.0:8000`. The `--reload` flag enables hot-reloading for development.
+The webhook application will be available at `http://0.0.0.0:8000`. The `--reload` flag enables hot-reloading for development.
+
+To run the pooling application locally, use the following command:
+
+```bash
+poetry run run-pooling --host 0.0.0.0 --port 8000 --reload --log-level info
+```
 
 ## Development
 
-This entire project was developed using a "vibecoding" approach with the assistance of Gemini, emphasizing rapid prototyping and iterative development.
+This entire project was developed using a "vibecoding" approach with the assistance of [Gemini](https://gemini.google.com), emphasizing rapid prototyping and iterative development.

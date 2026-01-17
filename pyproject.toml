@@ -6,18 +6,19 @@ authors = [
     {name = "AATrubilin",email = "aatrubilin@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.14,<3.15"
 dependencies = [
     "fastapi (>=0.128.0,<0.129.0)",
     "pydantic (>=2.12.5,<3.0.0)",
     "pydantic-settings (>=2.12.0,<3.0.0)",
     "dependency-injector (>=4.48.3,<5.0.0)",
-    "uvicorn (>=0.40.0,<0.41.0)"
+    "uvicorn (>=0.40.0,<0.41.0)",
+    "aiogram (>=3.24.0,<4.0.0)"
 ]
 
 [tool.poetry]
 packages = [{include = "mduck", from = "src"}]
-scripts = { api = "mduck.main:main" }
+scripts = { run-webhook = "mduck.main.webhook:main", run-pooling = "mduck.main.pooling:main" }
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -31,7 +32,7 @@ dev = [
     "mypy (>=1.19.1,<2.0.0)",
     "pre-commit (>=4.5.1,<5.0.0)",
     "tox (>=4.34.1,<5.0.0)",
-    "httpx (>=0.28.1,<0.29.0)"
+    "httpx (>=0.28.1,<0.29.0)",
 ]
 
 [tool.ruff]
@@ -44,7 +45,7 @@ line-length = 88
 select = ["E", "F", "W", "B", "C4", "D", "I", "PT", "SIM"]
 
 # Ignore some rules if necessary, e.g. D100, D104 for missing docstrings in public modules/packages
-ignore = ["D100", "D104", "D107", "D105"]
+ignore = ["D100", "D104", "D107", "D105", "D203", "D212"]
 
 [tool.ruff.format]
 quote-style = "double"

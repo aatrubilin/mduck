@@ -1,4 +1,5 @@
 import enum
+import uuid
 from pathlib import Path
 from typing import Annotated
 
@@ -26,11 +27,27 @@ class Ollama(BaseSettings):
     ] = ["You are a helpful assistant."]
 
 
+class _TelegramWebhook(BaseSettings):
+    """Telegram webhook settings."""
+
+    base_url: str = "https://mduck.example.com"
+    path: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    secret: str = Field(default_factory=lambda: str(uuid.uuid4()))
+
+
+class Telegram(BaseSettings):
+    """Telegram settings."""
+
+    token: str = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+    webhook: _TelegramWebhook = _TelegramWebhook()
+
+
 class Settings(BaseSettings):
     """Main settings."""
 
     environment: Environment = Environment.DEV
     ollama: Ollama = Ollama()
+    tg: Telegram = Telegram()
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parent / ".env",

@@ -2,7 +2,7 @@ from typing import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
-from mduck.main import create_app
+from mduck.main.webhook import create_app
 
 
 @pytest.fixture()

@@ -1,10 +1,11 @@
 from unittest.mock import MagicMock, patch
 
-from mduck.main import create_app, main
+from mduck.main.webhook import create_app, main
 
 
 def test_create_app() -> None:
-    """Test create_app function.
+    """
+    Test create_app function.
 
     GIVEN create_app function
     WHEN the app is created
@@ -16,7 +17,8 @@ def test_create_app() -> None:
 
 
 def test_main_function_runs_uvicorn_with_defaults() -> None:
-    """Test main function with defaults.
+    """
+    Test main function with defaults.
 
     GIVEN the main function
     WHEN it is called with no arguments
@@ -34,7 +36,7 @@ def test_main_function_runs_uvicorn_with_defaults() -> None:
         with patch("uvicorn.run") as mock_uvicorn_run:
             main()
             mock_uvicorn_run.assert_called_once_with(
-                app="mduck.main:create_app",
+                app="mduck.main.webhook:create_app",
                 host="0.0.0.0",
                 port=8000,
                 reload=False,
@@ -44,7 +46,8 @@ def test_main_function_runs_uvicorn_with_defaults() -> None:
 
 
 def test_main_function_runs_uvicorn_with_custom_args() -> None:
-    """Test main function with custom args.
+    """
+    Test main function with custom args.
 
     GIVEN the main function
     WHEN it is called with custom arguments
@@ -62,7 +65,7 @@ def test_main_function_runs_uvicorn_with_custom_args() -> None:
         with patch("uvicorn.run") as mock_uvicorn_run:
             main()
             mock_uvicorn_run.assert_called_once_with(
-                app="mduck.main:create_app",
+                app="mduck.main.webhook:create_app",
                 host="127.0.0.1",
                 port=8080,
                 reload=True,

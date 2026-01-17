@@ -2,7 +2,8 @@ from fastapi.testclient import TestClient
 
 
 def test_healthcheck(client: TestClient) -> None:
-    """Test healthcheck endpoint.
+    """
+    Test healthcheck endpoint.
 
     GIVEN
     WHEN healthcheck endpoint is called

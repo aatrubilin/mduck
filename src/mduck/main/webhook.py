@@ -8,9 +8,9 @@ from mduck.routers import healthcheck
 from mduck.version import __version__
 
 
-def create_app() -> FastAPI:
+def create_app(container: ApplicationContainer | None = None) -> FastAPI:
     """Create and configure the FastAPI application."""
-    container = ApplicationContainer()
+    container = container or ApplicationContainer()
 
     app = FastAPI(version=__version__)
     app.state.container = container
@@ -31,7 +31,7 @@ def main() -> None:
     args = parser.parse_args()
 
     uvicorn_params = {
-        "app": "mduck.main:create_app",
+        "app": "mduck.main.webhook:create_app",
         "host": args.host,
         "port": args.port,
         "reload": args.reload,
