@@ -3,7 +3,7 @@ import logging
 import random
 
 from aiogram import Bot, types
-from aiogram.enums import ChatAction  # Add this back
+from aiogram.enums import ChatAction, ParseMode
 
 from mduck.repositories.ollama import OllamaRepository
 
@@ -37,6 +37,21 @@ class MDuckService:
         logger.info(
             "MDuckService initialized with probability: %s", self._response_probability
         )
+
+    async def _send_typing_periodically(
+        self, chat_id: int, stop_event: asyncio.Event, interval: int = 4
+    ) -> None:
+        """Send 'typing' chat action periodically until stop_event is set."""
+        while not stop_event.is_set():
+            try:
+                await self._bot.send_chat_action(
+                    chat_id=chat_id, action=ChatAction.TYPING
+                )
+            except Exception as e:
+                logger.warning(
+                    "Failed to send typing action to chat %s: %s", chat_id, e
+                )
+            await asyncio.sleep(interval)
 
     def handle_incoming_message(self, message: types.Message) -> None:
         """
@@ -73,19 +88,23 @@ class MDuckService:
         message = await self.message_queue.get()
         chat_id = message.chat.id
         logger.info("Processing message from chat %s from queue.", chat_id)
-        try:
-            # Send "typing" action
-            await self._bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
 
-            # Generate response from Ollama asynchronously
+        try:
             if message.text is None:
                 raise RuntimeError("Empty message text")
+
+            # Send "typing" action in background
+            event = asyncio.Event()
+            asyncio.create_task(self._send_typing_periodically(chat_id, event))
+
+            # Generate response from Ollama asynchronously
             response_text = await self._ollama_repository.generate_response(
                 message.text
             )
+            event.set()
 
             # Send the response
-            await message.answer(response_text)
+            await message.answer(response_text, parse_mode=ParseMode.MARKDOWN)
             logger.info("Replied to message in chat %s.", chat_id)
         except Exception as e:
             logger.error(

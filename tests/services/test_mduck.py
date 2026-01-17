@@ -1,8 +1,9 @@
+import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from aiogram import Bot, types
-from aiogram.enums import ChatAction  # Add Bot here
+from aiogram.enums import ChatAction, ParseMode  # Add Bot here
 from mduck.services.mduck import MDuckService
 
 
@@ -91,11 +92,26 @@ async def test_process_message_from_queue(
     service.message_queue.put_nowait(mock_message)
     service.chats_with_queued_message.add(mock_message.chat.id)
 
-    # We run the processor once
+    # Make ollama_repo.generate_response take some time to allow typing actions to occur
+    async def delayed_generate_response(*args, **kwargs):
+        await asyncio.sleep(0.1)  # Simulate some processing time
+        return "Ollama response"
+
+    mock_ollama_repo.generate_response.side_effect = delayed_generate_response
+
     await service.process_message_from_queue()
 
-    # Assert that "typing" action was sent
-    mock_bot.send_chat_action.assert_awaited_once_with(
+    # Assert that "typing" action was sent multiple times periodically
+    # The exact number depends on the `_send_typing_periodically`
+    # interval and `generate_response` delay
+    # With interval=4 and delay=0.1, it should be called at least once
+    # For more robust testing, a higher delay and checking for multiple calls is better.
+    # Here we aim for at least one call given the minimal delay.
+    mock_bot.send_chat_action.assert_called()
+    assert (
+        mock_bot.send_chat_action.call_count >= 1
+    )  # It will be called at least once before the sleep in generate_response finishes
+    mock_bot.send_chat_action.assert_any_call(
         chat_id=mock_message.chat.id, action=ChatAction.TYPING
     )
 
@@ -103,7 +119,9 @@ async def test_process_message_from_queue(
     mock_ollama_repo.generate_response.assert_called_once_with(mock_message.text)
 
     # Assert that the response was sent
-    mock_message.answer.assert_awaited_once_with("Ollama response")
+    mock_message.answer.assert_awaited_once_with(
+        "Ollama response", parse_mode=ParseMode.MARKDOWN
+    )
 
     # Assert that cleanup still happens
     assert service.message_queue.empty()
