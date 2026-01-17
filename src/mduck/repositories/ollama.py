@@ -1,5 +1,4 @@
 import random
-from typing import cast
 
 import ollama
 
@@ -25,12 +24,12 @@ class OllamaRepository:
             system_prompts: A list of system prompts to use.
 
         """
-        self._client = ollama.Client(host=host)
+        self._client = ollama.AsyncClient(host=host)
         self._model = model
         self._temperature = temperature
         self._system_prompts = system_prompts
 
-    def generate_response(self, prompt: str) -> str:
+    async def generate_response(self, prompt: str) -> str:
         """
         Generate a response from the Ollama API.
 
@@ -44,7 +43,7 @@ class OllamaRepository:
 
         """
         system_prompt = random.choice(self._system_prompts)
-        response = self._client.chat(
+        response = await self._client.chat(
             model=self._model,
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -52,4 +51,6 @@ class OllamaRepository:
             ],
             options=ollama.Options(temperature=self._temperature),
         )
-        return cast(str, response["message"]["content"])
+        if response.message.content is None:
+            raise RuntimeError("Empty response from ollama")
+        return response.message.content

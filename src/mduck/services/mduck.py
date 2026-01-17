@@ -1,9 +1,9 @@
 import asyncio
 import logging
 import random
-from typing import Set
 
-from aiogram import types
+from aiogram import Bot, types
+from aiogram.enums import ChatAction  # Add this back
 
 from mduck.repositories.ollama import OllamaRepository
 
@@ -19,6 +19,7 @@ class MDuckService:
 
     def __init__(
         self,
+        bot: Bot,
         ollama_repository: OllamaRepository,
         response_probability: float = 0.3,
     ) -> None:
@@ -28,10 +29,11 @@ class MDuckService:
         :param ollama_repository: The repository for interacting with Ollama.
         :param response_probability: The chance (0.0 to 1.0) of responding to a message.
         """
-        self._repo = ollama_repository
+        self._bot = bot
+        self._ollama_repository = ollama_repository
         self._response_probability = response_probability
         self.message_queue: asyncio.Queue[types.Message] = asyncio.Queue()
-        self.chats_with_queued_message: Set[int] = set()
+        self.chats_with_queued_message: set[int] = set()
         logger.info(
             "MDuckService initialized with probability: %s", self._response_probability
         )
@@ -45,6 +47,8 @@ class MDuckService:
 
         :param message: The incoming aiogram Message object.
         """
+        if not message.text:
+            return
         if message.chat.id in self.chats_with_queued_message:
             logger.debug(
                 "Chat %s already has a message in queue, skipping.", message.chat.id
@@ -70,12 +74,34 @@ class MDuckService:
         chat_id = message.chat.id
         logger.info("Processing message from chat %s from queue.", chat_id)
         try:
-            await message.answer("Кря! Я утка, и я думаю над вашим сообщением...")
+            # Send "typing" action
+            await self._bot.send_chat_action(chat_id=chat_id, action=ChatAction.TYPING)
+
+            # Generate response from Ollama asynchronously
+            if message.text is None:
+                raise RuntimeError("Empty message text")
+            response_text = await self._ollama_repository.generate_response(
+                message.text
+            )
+
+            # Send the response
+            await message.answer(response_text)
             logger.info("Replied to message in chat %s.", chat_id)
         except Exception as e:
             logger.error(
-                "Error replying to message in chat %s: %s", chat_id, e, exc_info=True
+                "Error processing message in chat %s: %s", chat_id, e, exc_info=True
             )
+            try:
+                await message.answer(
+                    "Извините, произошла ошибка при обработке вашего сообщения."
+                )
+            except Exception as e2:
+                logger.error(
+                    "Failed to send error message to chat %s: %s",
+                    chat_id,
+                    e2,
+                    exc_info=True,
+                )
         finally:
             self.chats_with_queued_message.remove(chat_id)
             self.message_queue.task_done()

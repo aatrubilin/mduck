@@ -26,7 +26,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     mduck: providers.Provider[MDuckService] = providers.Singleton(
         MDuckService,
-        ollama_repository=gateways.provided.ollama,
+        bot=gateways.bot,
+        ollama_repository=gateways.ollama,
         response_probability=config.mduck.response_probability,  # type: ignore
     )
 

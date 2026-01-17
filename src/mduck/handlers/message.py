@@ -18,4 +18,3 @@ async def message_handler(
 ) -> None:
     """Message handler."""
     mduck.handle_incoming_message(message)
-    print(message)
