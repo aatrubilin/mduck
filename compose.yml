@@ -1,0 +1,24 @@
+services:
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ./data/ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - mduck-net
+
+  download-model:
+    image: ollama/ollama
+    volumes:
+      - ./data/ollama:/root/.ollama
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    command: "pull i82blikeu/gemma-3n-E4B-it-GGUF:Q3_K_M"
+    depends_on:
+      - ollama
+    networks:
+      - mduck-net
+
+networks:
+  mduck-net:
