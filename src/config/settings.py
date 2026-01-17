@@ -1,7 +1,6 @@
 import enum
 import uuid
 from pathlib import Path
-from typing import Annotated
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -21,10 +20,7 @@ class Ollama(BaseSettings):
     host: str = "http://localhost:11434"
     model: str = "llama2"
     temperature: float = 0.8
-    system_prompts: Annotated[
-        list[str],
-        Field(min_length=1),
-    ] = ["You are a helpful assistant."]
+    system_prompts_path: str = "./system_prompts.json"
 
 
 class _TelegramWebhook(BaseSettings):

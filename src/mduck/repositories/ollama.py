@@ -1,3 +1,4 @@
+import json
 import random
 
 import ollama
@@ -11,7 +12,7 @@ class OllamaRepository:
         host: str,
         model: str,
         temperature: float,
-        system_prompts: list[str],
+        system_prompts_path: str,
     ) -> None:
         """
         Initialize the OllamaRepository.
@@ -21,13 +22,14 @@ class OllamaRepository:
             host: The Ollama API host.
             model: The model to use for generating responses.
             temperature: The temperature to use for generating responses.
-            system_prompts: A list of system prompts to use.
+            system_prompts_path: A path to list of system prompts.
 
         """
         self._client = ollama.AsyncClient(host=host)
         self._model = model
         self._temperature = temperature
-        self._system_prompts = system_prompts
+        with open(system_prompts_path, "r") as fp:
+            self._system_prompts = json.load(fp)
 
     async def generate_response(self, prompt: str) -> str:
         """
