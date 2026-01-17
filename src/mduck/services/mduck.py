@@ -1,0 +1,82 @@
+import asyncio
+import logging
+import random
+from typing import Set
+
+from aiogram import types
+
+from mduck.repositories.ollama import OllamaRepository
+
+logger = logging.getLogger(__name__)
+
+
+class MDuckService:
+    """
+    A service for handling incoming messages with a certain probability.
+
+    Placing them in a queue, and processing them later.
+    """
+
+    def __init__(
+        self,
+        ollama_repository: OllamaRepository,
+        response_probability: float = 0.3,
+    ) -> None:
+        """
+        Initialize the MDuckService.
+
+        :param ollama_repository: The repository for interacting with Ollama.
+        :param response_probability: The chance (0.0 to 1.0) of responding to a message.
+        """
+        self._repo = ollama_repository
+        self._response_probability = response_probability
+        self.message_queue: asyncio.Queue[types.Message] = asyncio.Queue()
+        self.chats_with_queued_message: Set[int] = set()
+        logger.info(
+            "MDuckService initialized with probability: %s", self._response_probability
+        )
+
+    def handle_incoming_message(self, message: types.Message) -> None:
+        """
+        Handle an incoming message, deciding whether to queue it for a response.
+
+        The message is queued if the chat does not already have a message in the
+        queue and if the probability check passes.
+
+        :param message: The incoming aiogram Message object.
+        """
+        if message.chat.id in self.chats_with_queued_message:
+            logger.debug(
+                "Chat %s already has a message in queue, skipping.", message.chat.id
+            )
+            return
+
+        if random.random() < self._response_probability:
+            self.message_queue.put_nowait(message)
+            self.chats_with_queued_message.add(message.chat.id)
+            logger.info("Message from chat %s queued for processing.", message.chat.id)
+        else:
+            logger.debug(
+                "Message from chat %s skipped due to probability.", message.chat.id
+            )
+
+    async def process_message_from_queue(self) -> None:
+        """
+        Wait for a message from the queue, process it, and send a reply.
+
+        This method is intended to be run as a continuous background task.
+        """
+        message = await self.message_queue.get()
+        chat_id = message.chat.id
+        logger.info("Processing message from chat %s from queue.", chat_id)
+        try:
+            await message.answer("Кря! Я утка, и я думаю над вашим сообщением...")
+            logger.info("Replied to message in chat %s.", chat_id)
+        except Exception as e:
+            logger.error(
+                "Error replying to message in chat %s: %s", chat_id, e, exc_info=True
+            )
+        finally:
+            self.chats_with_queued_message.remove(chat_id)
+            self.message_queue.task_done()
+            logger.debug("Chat %s removed from queued messages set.", chat_id)

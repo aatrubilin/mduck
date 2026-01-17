@@ -1,11 +1,22 @@
 import argparse
+import asyncio
+import logging  # Add this
 
 import uvicorn
 from fastapi import FastAPI
 
 from mduck.containers.application import ApplicationContainer
 from mduck.routers import healthcheck
+from mduck.services.mduck import MDuckService
 from mduck.version import __version__
+
+logger = logging.getLogger("mduck")  # Add this
+
+
+async def run_mduck_processor(mduck: MDuckService) -> None:
+    """Run mduck processor."""
+    while True:
+        await mduck.process_message_from_queue()
 
 
 def create_app(container: ApplicationContainer | None = None) -> FastAPI:
@@ -15,6 +26,13 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
     app = FastAPI(version=__version__)
     app.state.container = container
     app.include_router(healthcheck.router)
+
+    @app.on_event("startup")
+    async def startup_event() -> None:
+        mduck: MDuckService = container.mduck()
+        asyncio.create_task(run_mduck_processor(mduck))
+        logger.info("MDuckService background processor started.")  # Add this
+
     return app
 
 

@@ -12,13 +12,13 @@ class GatewaysContainer(containers.DeclarativeContainer):
 
     bot: providers.Singleton[Bot] = providers.Singleton(
         Bot,
-        token=config.provided.tg.token,
+        token=config.tg.token,  # type: ignore
     )
 
     ollama: providers.Factory[OllamaRepository] = providers.Factory(
         OllamaRepository,
-        host=config.provided.ollama.host,
-        model=config.provided.ollama.model,
-        temperature=config.provided.ollama.temperature,
-        system_prompts=config.provided.ollama.system_prompts,
+        host=config.ollama.host,  # type: ignore
+        model=config.ollama.model,  # type: ignore
+        temperature=config.ollama.temperature,  # type: ignore
+        system_prompts=config.ollama.system_prompts,  # type: ignore
     )

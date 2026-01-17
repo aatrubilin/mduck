@@ -37,7 +37,7 @@ The webhook application will be available at `http://0.0.0.0:8000`. The `--reloa
 To run the pooling application locally, use the following command:
 
 ```bash
-poetry run run-pooling --host 0.0.0.0 --port 8000 --reload --log-level info
+poetry run run-pooling --log-level info
 ```
 
 ## Development

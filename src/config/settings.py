@@ -42,10 +42,17 @@ class Telegram(BaseSettings):
     webhook: _TelegramWebhook = _TelegramWebhook()
 
 
+class MDuckSettings(BaseSettings):
+    """MDuck settings."""
+
+    response_probability: float = 0.3
+
+
 class Settings(BaseSettings):
     """Main settings."""
 
     environment: Environment = Environment.DEV
+    mduck: MDuckSettings = MDuckSettings()
     ollama: Ollama = Ollama()
     tg: Telegram = Telegram()
 
