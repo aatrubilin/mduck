@@ -20,7 +20,7 @@ class Ollama(BaseSettings):
     host: str = "http://localhost:11434"
     model: str = "llama2"
     temperature: float = 0.8
-    system_prompts_path: str = "./system_prompts.json"
+    system_prompts_path: str = str(Path(__file__).parent / "system_prompts.json")
 
 
 class _TelegramWebhook(BaseSettings):
