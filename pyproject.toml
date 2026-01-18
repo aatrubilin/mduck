@@ -43,6 +43,7 @@ commit_author = "semantic-release <semantic-release@users.noreply.github.com>"
 changelog_file = "CHANGELOG.md"
 commit_message = "chore(release): {version} [skip ci]"
 hvcs = "github"
+version_source = "tag"
 version_toml = [
     "pyproject.toml:projectversion",
     "pyproject.toml:tool.commitizen.version",
