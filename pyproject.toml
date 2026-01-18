@@ -1,6 +1,6 @@
 [project]
 name = "mduck"
-version = "0.0.0"
+version = "0.1.0"
 description = "A caustic Telegram bot service."
 authors = [
     {name = "AATrubilin",email = "aatrubilin@gmail.com"}
@@ -22,7 +22,7 @@ packages = [{include = "mduck", from = "src"}]
 scripts = { run-webhook = "mduck.main.webhook:main", run-pooling = "mduck.main.pooling:main" }
 
 [tool.commitizen]
-version = "0.0.0"
+version = "0.1.0"
 name = "cz_conventional_commits"
 tag_format = "v{version}"
 version_scheme = "semver2"
