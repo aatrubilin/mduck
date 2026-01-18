@@ -79,17 +79,15 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: 🏷️ Get next version
-        id: get_version
-        run: |
-          echo "next_version=$(poetry run semantic-release version --print)" >> $GITHUB_OUTPUT
+      - name: 🎉 Semantic Release
+        id: semantic_release_action
+        uses: python-semantic-release/python-semantic-release@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: 🐳 Build and push Docker image
+        if: steps.semantic_release_action.outputs.new_release_version # Only build/push if a new release was made
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ steps.get_version.outputs.next_version }}
-      - name: 🎉 Semantic Release
-        run: poetry run semantic-release version && poetry run semantic-release publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tags: ghcr.io/${{ github.repository }}:${{ steps.semantic_release_action.outputs.new_release_version }}
