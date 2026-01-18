@@ -90,6 +90,6 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ steps.get_version.outputs.next_version }}
       - name: 🎉 Semantic Release
-        run: poetry run semantic-release publish
+        run: poetry run semantic-release version && poetry run semantic-release publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -44,7 +44,7 @@ changelog_file = "CHANGELOG.md"
 commit_message = "chore(release): {version} [skip ci]"
 hvcs = "github"
 version_toml = [
-    "pyproject.toml:tool.poetry.version",
+    "pyproject.toml:projectversion",
     "pyproject.toml:tool.commitizen.version",
 ]
 
