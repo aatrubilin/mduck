@@ -23,13 +23,14 @@ scripts = { run-webhook = "mduck.main.webhook:main", run-pooling = "mduck.main.p
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-tag_format = "$version"
+tag_format = "v{version}"
 version_scheme = "semver2"
 version_provider = "poetry"
 update_changelog_on_bump = true
 major_version_zero = true
 
 [tool.semantic_release]
+first_release = true
 version_source = "tag"
 branch = "master"
 upload_to_pypi = false
