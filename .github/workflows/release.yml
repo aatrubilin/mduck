@@ -7,6 +7,7 @@ on:
 
 jobs:
   lint_and_test:
+    name: 🧪 Lint & Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -28,6 +29,7 @@ jobs:
         run: poetry run pytest
 
   release:
+    name: 🚀 Release
     needs: lint_and_test
     runs-on: ubuntu-latest
     permissions:
