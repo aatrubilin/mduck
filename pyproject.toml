@@ -1,6 +1,6 @@
 [project]
 name = "mduck"
-version = "0.1.0"
+version = "0.0.0"
 description = "A caustic Telegram bot service."
 authors = [
     {name = "AATrubilin",email = "aatrubilin@gmail.com"}
@@ -22,6 +22,7 @@ packages = [{include = "mduck", from = "src"}]
 scripts = { run-webhook = "mduck.main.webhook:main", run-pooling = "mduck.main.pooling:main" }
 
 [tool.commitizen]
+version = "0.0.0"
 name = "cz_conventional_commits"
 tag_format = "v{version}"
 version_scheme = "semver2"
@@ -30,8 +31,6 @@ update_changelog_on_bump = true
 major_version_zero = true
 
 [tool.semantic_release]
-first_release = true
-version_source = "tag"
 branch = "master"
 upload_to_pypi = false
 upload_to_release = true
@@ -40,6 +39,10 @@ commit_author = "semantic-release <semantic-release@users.noreply.github.com>"
 changelog_file = "CHANGELOG.md"
 commit_message = "chore(release): {version} [skip ci]"
 hvcs = "github"
+version_toml = [
+    "pyproject.toml:tool.poetry.version",
+    "pyproject.toml:tool.commitizen.version",
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
