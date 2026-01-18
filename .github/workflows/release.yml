@@ -10,16 +10,16 @@ jobs:
     name: 🧪 Lint & Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: 🛒 Checkout code
         uses: actions/checkout@v4
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.14'
-      - name: Install Poetry
+      - name: 📦 Install Poetry
         run: |
           pipx install poetry
-      - name: Cache dependencies
+      - name: 💾 Cache dependencies
         id: cache-dependencies
         uses: actions/cache@v4
         with:
@@ -27,15 +27,15 @@ jobs:
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
-      - name: Install dependencies
+      - name: ➕ Install dependencies
         run: |
           poetry install --no-interaction
-      - name: Run linters
+      - name: 🧹 Run linters
         run: |
           poetry run ruff check src/mduck tests
           poetry run ruff format --check src/mduck tests
           poetry run mypy --strict src/mduck
-      - name: Run tests
+      - name: 🧪 Run tests
         run: poetry run pytest
 
   release:
@@ -49,18 +49,18 @@ jobs:
       id-token: write # to enable use of OIDC for npm provenance
       packages: write # to be able to upload packages to ghcr.io
     steps:
-      - name: Checkout code
+      - name: 🛒 Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # needed by semantic-release
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.14'
-      - name: Install Poetry
+      - name: 📦 Install Poetry
         run: |
           pipx install poetry
-      - name: Cache dependencies
+      - name: 💾 Cache dependencies
         id: cache-dependencies
         uses: actions/cache@v4
         with:
@@ -68,26 +68,26 @@ jobs:
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
-      - name: Install dependencies
+      - name: ➕ Install dependencies
         run: |
           poetry install --no-interaction
-      - name: Log in to GitHub Container Registry
+      - name: 🔑 Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get next version
+      - name: 🏷️ Get next version
         id: get_version
         run: |
           echo "next_version=$(poetry run semantic-release version --print)" >> $GITHUB_OUTPUT
-      - name: Build and push Docker image
+      - name: 🐳 Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ steps.get_version.outputs.next_version }}
-      - name: Semantic Release
+      - name: 🎉 Semantic Release
         run: poetry run semantic-release publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
