@@ -125,6 +125,27 @@ def test_run_reloader(
 
 @patch("mduck.main.pooling.time.time")
 @patch("mduck.main.pooling.subprocess.Popen")
+def test_code_change_handler_debounce(
+    mock_popen: MagicMock,
+    mock_time: MagicMock,
+) -> None:
+    """Test the CodeChangeHandler debounce."""
+    # Arrange
+    mock_time.side_effect = [1.0, 1.1, 1.2, 2.3, 2.4]
+    handler = CodeChangeHandler()
+    mock_popen.assert_called_once()
+
+    # Act
+    handler.on_any_event(FileSystemEvent("src"))
+    handler.on_any_event(FileSystemEvent("src"))
+    handler.on_any_event(FileSystemEvent("src"))
+
+    # Assert
+    assert mock_popen.call_count == 2
+
+
+@patch("mduck.main.pooling.time.time")
+@patch("mduck.main.pooling.subprocess.Popen")
 def test_code_change_handler(mock_popen: MagicMock, mock_time: MagicMock) -> None:
     """Test the CodeChangeHandler."""
     # Arrange
