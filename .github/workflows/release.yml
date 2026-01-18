@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+      - name: Run linters
+        run: |
+          poetry run ruff check src/mduck tests
+          poetry run ruff format --check src/mduck tests
+          poetry run mypy --strict src/mduck
+      - name: Run tests
+        run: poetry run pytest
+
+  release:
+    needs: lint_and_test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # needed by semantic-release
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get next version
+        id: get_version
+        run: |
+          echo "next_version=$(poetry run semantic-release version --print)" >> $GITHUB_OUTPUT
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ steps.get_version.outputs.next_version }}
+      - name: Semantic Release
+        run: poetry run semantic-release publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
