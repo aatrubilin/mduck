@@ -1,9 +1,9 @@
 """Application container."""
 
 from aiogram import Dispatcher
-from config.settings import Settings, settings
 from dependency_injector import containers, providers
 
+from config.settings import Settings, settings
 from mduck.containers.gateways import GatewaysContainer
 from mduck.dp import init_dispatcher
 from mduck.services.mduck import MDuckService

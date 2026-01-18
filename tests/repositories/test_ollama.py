@@ -1,10 +1,11 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
 from mduck.repositories.ollama import OllamaRepository
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @patch("ollama.AsyncClient")
 @patch("builtins.open")
 @patch("json.load")
@@ -57,7 +58,7 @@ async def test_generate_response(
     assert response == expected_response
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @patch("ollama.AsyncClient")
 @patch("builtins.open")
 @patch("json.load")

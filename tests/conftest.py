@@ -2,10 +2,11 @@ from typing import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
+
 from mduck.main.webhook import create_app
 
 
-@pytest.fixture()
+@pytest.fixture
 def client() -> Iterator[TestClient]:
     """Return a test client."""
     app = create_app()

@@ -4,10 +4,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from aiogram import Bot, types
 from aiogram.enums import ChatAction, ChatType, ParseMode
+
 from mduck.services.mduck import MDuckService
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_ollama_repo() -> MagicMock:
     """Fixture for a mocked OllamaRepository."""
     repo = MagicMock()
@@ -15,7 +16,7 @@ def mock_ollama_repo() -> MagicMock:
     return repo
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_bot() -> MagicMock:
     """Fixture for a mocked aiogram Bot."""
     bot = MagicMock(spec=Bot)
@@ -23,7 +24,7 @@ def mock_bot() -> MagicMock:
     return bot
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_message() -> MagicMock:
     """Fixture for a mocked aiogram Message."""
     message = MagicMock(spec=types.Message)
@@ -36,7 +37,7 @@ def mock_message() -> MagicMock:
     return message
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_handle_incoming_message_adds_to_queue(
     mock_bot: MagicMock, mock_ollama_repo: MagicMock, mock_message: MagicMock
 ) -> None:
@@ -56,7 +57,7 @@ async def test_handle_incoming_message_adds_to_queue(
     assert queued_message == mock_message
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_handle_incoming_message_skips_if_chat_already_queued(
     mock_bot: MagicMock, mock_ollama_repo: MagicMock, mock_message: MagicMock
 ) -> None:
@@ -73,7 +74,7 @@ async def test_handle_incoming_message_skips_if_chat_already_queued(
     assert service.message_queue.empty()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_handle_incoming_message_skips_if_probability_fails(
     mock_bot: MagicMock, mock_ollama_repo: MagicMock, mock_message: MagicMock
 ) -> None:
@@ -91,7 +92,7 @@ async def test_handle_incoming_message_skips_if_probability_fails(
     mock_message.answer.assert_awaited_once()
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_process_message_from_queue(
     mock_bot: MagicMock, mock_ollama_repo: MagicMock, mock_message: MagicMock
 ) -> None:
@@ -136,7 +137,7 @@ async def test_process_message_from_queue(
     assert not service.chats_with_queued_message
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_process_message_from_queue_handles_exception(
     mock_bot: MagicMock, mock_ollama_repo: MagicMock, mock_message: MagicMock
 ) -> None:
@@ -166,7 +167,7 @@ async def test_process_message_from_queue_handles_exception(
     assert not service.chats_with_queued_message
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_handle_incoming_message_skips_on_empty_text(
     mock_bot: MagicMock, mock_ollama_repo: MagicMock, mock_message: MagicMock
 ) -> None:
@@ -184,7 +185,7 @@ async def test_handle_incoming_message_skips_on_empty_text(
     assert mock_message.chat.id not in service.chats_with_queued_message
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_process_message_from_queue_raises_on_empty_text(
     mock_bot: MagicMock, mock_ollama_repo: MagicMock, mock_message: MagicMock
 ) -> None:
@@ -213,7 +214,7 @@ async def test_process_message_from_queue_raises_on_empty_text(
     assert not service.chats_with_queued_message
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_process_message_handles_nested_exception(
     mock_bot: MagicMock, mock_ollama_repo: MagicMock, mock_message: MagicMock
 ) -> None:
@@ -252,7 +253,7 @@ async def test_process_message_handles_nested_exception(
     assert not service.chats_with_queued_message
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_send_typing_periodically_handles_exception(
     mock_bot: MagicMock, mock_ollama_repo: MagicMock
 ) -> None:

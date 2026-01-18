@@ -2,11 +2,12 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from aiogram import types
+
 from mduck.handlers.message import message_handler
 from mduck.services.mduck import MDuckService
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_message_handler() -> None:
     """Test that the message handler calls the mduck service."""
     # Arrange

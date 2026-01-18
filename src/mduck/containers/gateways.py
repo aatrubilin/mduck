@@ -1,7 +1,7 @@
 from aiogram import Bot
-from config.settings import Settings
 from dependency_injector import containers, providers
 
+from config.settings import Settings
 from mduck.repositories.ollama import OllamaRepository
 
 

@@ -1,4 +1,5 @@
 from aiogram import Dispatcher
+
 from mduck.dp import init_dispatcher
 from mduck.handlers import commands, message, new_chat_member
 

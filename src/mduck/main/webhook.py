@@ -1,6 +1,8 @@
 import argparse
 import asyncio
+import contextlib
 import logging  # Add this
+from typing import AsyncGenerator
 
 import uvicorn
 from fastapi import FastAPI
@@ -23,15 +25,16 @@ def create_app(container: ApplicationContainer | None = None) -> FastAPI:
     """Create and configure the FastAPI application."""
     container = container or ApplicationContainer()
 
-    app = FastAPI(version=__version__)
-    app.state.container = container
-    app.include_router(healthcheck.router)
-
-    @app.on_event("startup")
-    async def startup_event() -> None:
+    @contextlib.asynccontextmanager
+    async def lifespan(app: FastAPI) -> "AsyncGenerator[None, None]":
         mduck: MDuckService = container.mduck()
         asyncio.create_task(run_mduck_processor(mduck))
         logger.info("MDuckService background processor started.")  # Add this
+        yield
+
+    app = FastAPI(version=__version__, lifespan=lifespan)
+    app.state.container = container
+    app.include_router(healthcheck.router)
 
     return app
 

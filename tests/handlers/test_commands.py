@@ -3,10 +3,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from aiogram import types
 from aiogram.enums import ChatAction
+
 from mduck.handlers.commands import command_start_handler
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @patch("asyncio.sleep", return_value=None)
 async def test_command_start_handler(mock_sleep: MagicMock) -> None:
     """Test the command_start_handler."""

@@ -3,10 +3,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from aiogram import types
 from aiogram.enums import ChatAction
+
 from mduck.handlers.new_chat_member import new_chat_member_handler
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @patch("asyncio.sleep", return_value=None)
 async def test_new_chat_member_handler_with_bot(mock_sleep: MagicMock) -> None:
     """Test the new_chat_member_handler when the bot is added."""
@@ -49,7 +50,7 @@ async def test_new_chat_member_handler_with_bot(mock_sleep: MagicMock) -> None:
     assert mock_message.answer.call_count == 2
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_new_chat_member_handler_with_other_user() -> None:
     """Test the new_chat_member_handler when another user is added."""
     # Arrange
