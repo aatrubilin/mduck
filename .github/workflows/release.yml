@@ -49,6 +49,10 @@ jobs:
       id-token: write # to enable use of OIDC for npm provenance
       packages: write # to be able to upload packages to ghcr.io
     steps:
+      - name: 🛒 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # needed by semantic-release
       - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
