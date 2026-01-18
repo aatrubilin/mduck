@@ -73,25 +73,22 @@ jobs:
       - name: ➕ Install dependencies
         run: |
           poetry install --no-interaction
-      - name: ⚙️ Git Configuration
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
+      - name: 🎉 Semantic Release
+        id: semantic_release
+        uses: python-semantic-release/python-semantic-release@v10.5.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: 🔑 Log in to GitHub Container Registry
         uses: docker/login-action@v3
+        if: steps.semantic_release.outputs.released == 'true'
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: 🎉 Semantic Release
-        id: semantic_release_action
-        uses: python-semantic-release/python-semantic-release@v10.5.3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: 🐳 Build and push Docker image
-        if: steps.semantic_release_action.outputs.new_release_version # Only build/push if a new release was made
+        if: steps.semantic_release.outputs.released == 'true'
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ steps.semantic_release_action.outputs.new_release_version }}
+          tags: ghcr.io/${{ github.repository }}:${{ steps.semantic_release.outputs.version }}
