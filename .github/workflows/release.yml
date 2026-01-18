@@ -16,10 +16,25 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.14'
+
+      - name: Cache and install Poetry
+        uses: Gr1N/setup-poetry@v9
+        with:
+          poetry-version: "1.8.2"
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
       - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry install
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      - name: Install project
+        run: poetry install --no-interaction
       - name: Run linters
         run: |
           poetry run ruff check src/mduck tests
@@ -47,10 +62,25 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.14'
+
+      - name: Cache and install Poetry
+        uses: Gr1N/setup-poetry@v9
+        with:
+          poetry-version: "1.8.2"
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
       - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry install
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      - name: Install project
+        run: poetry install --no-interaction
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
