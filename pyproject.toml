@@ -27,6 +27,9 @@ name = "cz_conventional_commits"
 tag_format = "v{version}"
 version_scheme = "semver2"
 version_provider = "poetry"
+version_files = [
+    "pyproject.toml:version",
+]
 update_changelog_on_bump = true
 major_version_zero = true
 
@@ -34,6 +37,7 @@ major_version_zero = true
 branch = "master"
 upload_to_pypi = false
 upload_to_release = true
+major_on_zero = true
 build_command = "pip install poetry && poetry build"
 commit_author = "semantic-release <semantic-release@users.noreply.github.com>"
 changelog_file = "CHANGELOG.md"
