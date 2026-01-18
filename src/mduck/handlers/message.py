@@ -17,4 +17,4 @@ async def message_handler(
     mduck: MDuckService = Provide[ApplicationContainer.mduck],
 ) -> None:
     """Message handler."""
-    mduck.handle_incoming_message(message)
+    await mduck.handle_incoming_message(message)

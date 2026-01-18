@@ -41,7 +41,9 @@ class Telegram(BaseSettings):
 class MDuckSettings(BaseSettings):
     """MDuck settings."""
 
-    response_probability: float = 0.3
+    response_probability_private: float = 0.3
+    response_probability_group: float = 0.3
+    response_probability_supergroup: float = 0.3
 
 
 class Settings(BaseSettings):

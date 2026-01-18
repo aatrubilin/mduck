@@ -28,7 +28,9 @@ class ApplicationContainer(containers.DeclarativeContainer):
         MDuckService,
         bot=gateways.bot,
         ollama_repository=gateways.ollama,
-        response_probability=config.mduck.response_probability,  # type: ignore
+        response_probability_private=config.mduck.response_probability_private,  # type: ignore
+        response_probability_group=config.mduck.response_probability_group,  # type: ignore
+        response_probability_supergroup=config.mduck.response_probability_supergroup,  # type: ignore
     )
 
     dispatcher: providers.Provider[Dispatcher] = providers.Resource(init_dispatcher)

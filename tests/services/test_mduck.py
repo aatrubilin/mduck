@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from aiogram import Bot, types
-from aiogram.enums import ChatAction, ParseMode  # Add Bot here
+from aiogram.enums import ChatAction, ChatType, ParseMode
 from mduck.services.mduck import MDuckService
 
 
@@ -29,6 +29,7 @@ def mock_message() -> MagicMock:
     message = MagicMock(spec=types.Message)
     message.chat = MagicMock(spec=types.Chat)
     message.chat.id = 12345
+    message.chat.type = ChatType.PRIVATE
     message.text = "User prompt"
     message.answer = AsyncMock()
     # No message.bot needed, as MDuckService now uses its own injected bot
@@ -41,11 +42,13 @@ async def test_handle_incoming_message_adds_to_queue(
 ) -> None:
     """Test that a message is added to the queue if probability check passes."""
     service = MDuckService(
-        bot=mock_bot, ollama_repository=mock_ollama_repo, response_probability=1.0
+        bot=mock_bot,
+        ollama_repository=mock_ollama_repo,
+        response_probability_private=1.0,
     )
 
     with patch("random.random", return_value=0.5):
-        service.handle_incoming_message(mock_message)
+        await service.handle_incoming_message(mock_message)
 
     assert not service.message_queue.empty()
     assert mock_message.chat.id in service.chats_with_queued_message
@@ -59,11 +62,13 @@ async def test_handle_incoming_message_skips_if_chat_already_queued(
 ) -> None:
     """Test that a message is not added if chat has a queued message."""
     service = MDuckService(
-        bot=mock_bot, ollama_repository=mock_ollama_repo, response_probability=1.0
+        bot=mock_bot,
+        ollama_repository=mock_ollama_repo,
+        response_probability_private=1.0,
     )
     service.chats_with_queued_message.add(mock_message.chat.id)
 
-    service.handle_incoming_message(mock_message)
+    await service.handle_incoming_message(mock_message)
 
     assert service.message_queue.empty()
 
@@ -74,13 +79,16 @@ async def test_handle_incoming_message_skips_if_probability_fails(
 ) -> None:
     """Test that a message is not added if the probability check fails."""
     service = MDuckService(
-        bot=mock_bot, ollama_repository=mock_ollama_repo, response_probability=0.0
+        bot=mock_bot,
+        ollama_repository=mock_ollama_repo,
+        response_probability_private=0.0,
     )
 
     with patch("random.random", return_value=0.5):
-        service.handle_incoming_message(mock_message)
+        await service.handle_incoming_message(mock_message)
 
     assert service.message_queue.empty()
+    mock_message.answer.assert_awaited_once()
 
 
 @pytest.mark.asyncio()
@@ -165,10 +173,12 @@ async def test_handle_incoming_message_skips_on_empty_text(
     """Test that handle_incoming_message skips if message text is empty."""
     mock_message.text = None  # Simulate empty text
     service = MDuckService(
-        bot=mock_bot, ollama_repository=mock_ollama_repo, response_probability=1.0
+        bot=mock_bot,
+        ollama_repository=mock_ollama_repo,
+        response_probability_private=1.0,
     )
 
-    service.handle_incoming_message(mock_message)
+    await service.handle_incoming_message(mock_message)
 
     assert service.message_queue.empty()
     assert mock_message.chat.id not in service.chats_with_queued_message
@@ -240,3 +250,24 @@ async def test_process_message_handles_nested_exception(
     # Crucially, assert that cleanup still happens
     assert service.message_queue.empty()
     assert not service.chats_with_queued_message
+
+
+@pytest.mark.asyncio()
+async def test_send_typing_periodically_handles_exception(
+    mock_bot: MagicMock, mock_ollama_repo: MagicMock
+) -> None:
+    """Test that _send_typing_periodically handles exceptions."""
+    service = MDuckService(bot=mock_bot, ollama_repository=mock_ollama_repo)
+    mock_bot.send_chat_action.side_effect = Exception("Test Exception")
+    stop_event = asyncio.Event()
+
+    with patch("mduck.services.mduck.logger") as mock_logger:
+        # We need to run the task and give it a moment to execute
+        task = asyncio.create_task(
+            service._send_typing_periodically(chat_id=123, stop_event=stop_event)
+        )
+        await asyncio.sleep(0.1)
+        stop_event.set()
+        await task
+
+    mock_logger.warning.assert_called_once()
