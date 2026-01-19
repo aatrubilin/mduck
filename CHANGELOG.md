@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.3.1 (2026-01-19)
+
+### Bug Fixes
+
+- **deploy**: Make install script robust for piped execution
+  ([`3688b91`](https://github.com/aatrubilin/mduck/commit/3688b91303e4aced8e594868ff071506a2330483))
+
+
 ## v1.3.0 (2026-01-19)
 
 ### Features
