@@ -3,8 +3,6 @@ services:
     image: ollama/ollama
     volumes:
       - ./data/ollama:/root/.ollama
-    ports:
-      - "11434:11434"
     networks:
       - mduck-net
 
@@ -19,6 +17,31 @@ services:
       - ollama
     networks:
       - mduck-net
+
+  mduck:
+    image: ghcr.io/aatrubilin/mduck:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=prod
+      # Ollama settings
+      - OLLAMA__HOST=http://ollama:11434
+      - OLLAMA__MODEL=i82blikeu/gemma-3n-E4B-it-GGUF:Q3_K_M
+      - OLLAMA__TEMPERATURE=0.8
+      - OLLAMA__SYSTEM_PROMPTS_PATH=/app/src/config/system_prompts.json
+      # Telegram settings
+      - TG__TOKEN=${TG__TOKEN:-123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11}
+      - TG__WEBHOOK__HOST=${TG__WEBHOOK__HOST:-https://mduck.example.com}
+      # - TG__WEBHOOK__PATH='secretpath'
+      # - TG__WEBHOOK__SECRET='your-secret'
+      # MDuck
+      - MDUCK__RESPONSE_PROBABILITY_PRIVATE=1.2
+      - MDUCK__RESPONSE_PROBABILITY_GROUP=0.01
+      - MDUCK__RESPONSE_PROBABILITY_SUPERGROUP=0.001
+    networks:
+      - mduck-net
+    depends_on:
+      - download-model
 
 networks:
   mduck-net:

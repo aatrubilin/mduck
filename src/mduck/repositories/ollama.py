@@ -1,7 +1,10 @@
 import json
+import logging
 import random
 
 import ollama
+
+logger = logging.getLogger(__name__)
 
 
 class OllamaRepository:
@@ -30,6 +33,11 @@ class OllamaRepository:
         self._temperature = temperature
         with open(system_prompts_path, "r") as fp:
             self._system_prompts = json.load(fp)
+        logger.info(
+            "Ollama repo inited with host: %s, %s sys prompts",
+            host,
+            len(self._system_prompts),
+        )
 
     async def generate_response(self, prompt: str) -> str:
         """

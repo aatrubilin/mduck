@@ -26,8 +26,8 @@ class Ollama(BaseSettings):
 class _TelegramWebhook(BaseSettings):
     """Telegram webhook settings."""
 
-    base_url: str = "https://mduck.example.com"
-    path: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    host: str = "https://mduck.example.com"
+    key: str = Field(default_factory=lambda: str(uuid.uuid4()))
     secret: str = Field(default_factory=lambda: str(uuid.uuid4()))
 
 

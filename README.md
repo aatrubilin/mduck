@@ -1,5 +1,9 @@
 [![Made with Gemini](https://img.shields.io/badge/Made%20with-Gemini-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://gemini.google.com)
 
+
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/aatrubilin/mduck/release.yml)
+![GitHub Release](https://img.shields.io/github/v/release/aatrubilin/mduck)
+
 # MooDuck Bot `mduck`
 
 A caustic Telegram bot service.

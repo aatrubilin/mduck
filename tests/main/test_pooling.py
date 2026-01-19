@@ -47,13 +47,13 @@ async def test_start_pooling_with_container() -> None:
     mock_dispatcher.start_polling.assert_called_once_with(mock_bot)
 
 
-@patch("mduck.main.pooling.asyncio.run")
+@patch("mduck.main.pooling.start_pooling")
 @patch("mduck.main.pooling.logging.basicConfig")
 @patch("mduck.main.pooling.argparse.ArgumentParser")
 def test_main(
     mock_argparse: MagicMock,
     mock_logging: MagicMock,
-    mock_asyncio_run: MagicMock,
+    mock_start_pooling: MagicMock,
 ) -> None:
     """Test the main function."""
     # Arrange
@@ -68,7 +68,7 @@ def test_main(
     # Assert
     mock_argparse.assert_called_once_with(description="Run the pooling application.")
     mock_logging.assert_called_once_with(level="INFO")
-    mock_asyncio_run.assert_called_once()
+    mock_start_pooling.assert_called_once()
 
 
 @patch("mduck.main.pooling.run_reloader")

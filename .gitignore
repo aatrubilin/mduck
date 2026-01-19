@@ -313,3 +313,6 @@ poetry.toml
 *.iml
 .local/
 /data/
+
+# Other
+compose.override.yml

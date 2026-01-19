@@ -6,6 +6,11 @@ from mduck.handlers import commands, message, new_chat_member
 
 def test_init_dispatcher() -> None:
     """Test the init_dispatcher function."""
+    # Arrange
+    commands.router._parent_router = None
+    new_chat_member.router._parent_router = None
+    message.router._parent_router = None
+
     # Act
     dp = init_dispatcher()
 

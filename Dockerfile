@@ -13,16 +13,16 @@ WORKDIR /app
 RUN pip install poetry
 
 # Copy poetry dependency files
-COPY poetry.lock pyproject.toml /app/
-
-# Install dependencies
-RUN poetry install --no-root --without dev
+COPY poetry.lock pyproject.toml README.md /app/
 
 # Copy the rest of the application code
 COPY src/ /app/src
+
+# Install dependencies
+RUN poetry install --only main
 
 # Expose port 8000
 EXPOSE 8000
 
 # Run the application
-CMD ["poetry", "run", "api", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["poetry", "run", "run-webhook", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]
