@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.1 (2026-01-19)
+
+### Bug Fixes
+
+- **ci**: Set up buildx to enable docker layer caching
+  ([`add3ed3`](https://github.com/aatrubilin/mduck/commit/add3ed3028cc3c2c715354673a9eff1c877272f9))
+
+
 ## v1.1.0 (2026-01-19)
 
 ### Bug Fixes
