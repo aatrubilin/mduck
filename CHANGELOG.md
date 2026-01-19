@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.3.0 (2026-01-19)
+
+### Features
+
+- **ci**: Enable multi-architecture docker builds
+  ([`190a546`](https://github.com/aatrubilin/mduck/commit/190a54667e5d4f799edc47d75d57d1ee490dafa9))
+
+
 ## v1.2.0 (2026-01-19)
 
 ### Features
