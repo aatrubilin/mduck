@@ -19,7 +19,7 @@ This project implements a Telegram bot service designed to generate sarcastic an
 To install or update the `mduck` service, run the following command in your terminal. The script will guide you through the process.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aatrubilin/mduck/master/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/aatrubilin/mduck/master/install.sh | bash
 ```
 
 **Note for Windows users**: This command should be run in **WSL (Windows Subsystem for Linux)**.

@@ -9,6 +9,14 @@
 #
 
 # ---
+# Bash check
+# ---
+if [ -z "$BASH_VERSION" ]; then
+    echo "This script requires Bash. Please run it with: curl -fsSL https://raw.githubusercontent.com/aatrubilin/mduck/master/install.sh | bash" >&2
+    exit 1
+fi
+
+# ---
 # Colors and formatting
 # ---
 C_RESET='\033[0m'
@@ -70,7 +78,7 @@ if [[ "$(printf '%s\n' "$MIN_DOCKER_VERSION" "$DOCKER_VERSION" | sort -V | head 
     # ---
     info "Setting up installation directory..."
     DEFAULT_DIR="$HOME/mduck"
-    read -p "Enter installation directory [default: $DEFAULT_DIR]: " INSTALL_DIR
+    read -p "Enter installation directory [default: $DEFAULT_DIR]: " INSTALL_DIR < /dev/tty
     INSTALL_DIR=${INSTALL_DIR:-$DEFAULT_DIR}
 
 mkdir -p "$INSTALL_DIR"
@@ -96,7 +104,7 @@ mkdir -p "$INSTALL_DIR"
 
         info "Please provide your Telegram Bot Token."
         while true; do
-            read -p "Enter TG__TOKEN: " TG_TOKEN
+            read -p "Enter TG__TOKEN: " TG_TOKEN < /dev/tty
             if [ -n "$TG_TOKEN" ]; then
                 sed -i.bak "s|TG__TOKEN=.*|TG__TOKEN=$TG_TOKEN|" .env
                 break
@@ -107,7 +115,7 @@ mkdir -p "$INSTALL_DIR"
 
         info "Please provide the public webhook host for your bot (e.g., https://your-domain.com)."
         while true; do
-            read -p "Enter TG__WEBHOOK__HOST: " TG_WEBHOOK_HOST
+            read -p "Enter TG__WEBHOOK__HOST: " TG_WEBHOOK_HOST < /dev/tty
             if [ -n "$TG_WEBHOOK_HOST" ]; then
                 sed -i.bak "s|TG__WEBHOOK__HOST=.*|TG__WEBHOOK__HOST=$TG_WEBHOOK_HOST|" .env
                 break
