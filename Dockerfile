@@ -1,28 +1,55 @@
-# Use an official Python runtime as a parent image
-FROM python:3.14-slim
+# ---- Base Stage ----
+FROM python:3.14-slim AS base
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV POETRY_NO_INTERACTION=1
-
-# Set work directory
-WORKDIR /app
+ENV POETRY_NO_INTERACTION=1 \
+    POETRY_VERSION=1.8.2 \
+    POETRY_VIRTUALENVS_CREATE=false
 
 # Install poetry
-RUN pip install poetry
+RUN pip install "poetry==$POETRY_VERSION"
 
-# Copy poetry dependency files
-COPY poetry.lock pyproject.toml README.md /app/
+# ---- Builder Stage ----
+FROM base AS builder
 
-# Copy the rest of the application code
-COPY src/ /app/src
+WORKDIR /app
 
-# Install dependencies
+# 1. Copy only dependency definition files to leverage caching
+COPY poetry.lock pyproject.toml /app/
+
+# 2. Export dependencies to requirements.txt
+#    --without-hashes is used for broader compatibility
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+# 3. Install dependencies using pip. This layer will be cached.
+RUN pip install -r requirements.txt
+
+# 4. Now, copy the rest of the files needed for the project installation
+COPY README.md /app/
+COPY src/ /app/src/
+
+# 5. Install the project itself. Poetry will recognize that the
+#    dependencies are already installed, so this step will be very fast.
 RUN poetry install --only main
 
-# Expose port 8000
+# ---- Final Stage ----
+FROM python:3.14-slim AS final
+
+WORKDIR /app
+
+# Create a non-root user
+RUN addgroup --system app && adduser --system --group app
+
+# Copy installed dependencies and scripts from the builder stage
+COPY --from=builder /usr/local/lib/python3.14/site-packages/ /usr/local/lib/python3.14/site-packages/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+# Copy the application code
+COPY --from=builder /app/src/ /app/src/
+
+# Switch to the non-root user
+USER app
+
 EXPOSE 8000
 
-# Run the application
-CMD ["poetry", "run", "run-webhook", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]
+CMD ["run-webhook", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]
