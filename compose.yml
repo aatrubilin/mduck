@@ -1,6 +1,11 @@
 services:
   ollama:
     image: ollama/ollama
+    environment:
+      OLLAMA_NUM_THREADS: 4
+      OLLAMA_MAX_LOADED_MODELS: 1
+      OLLAMA_KEEP_ALIVE: "-5m"
+      OLLAMA_FLASH_ATTENTION: "false"
     volumes:
       - ./data/ollama:/root/.ollama
     networks:
