@@ -19,12 +19,15 @@ jobs:
       - name: 📦 Install Poetry
         run: |
           pipx install poetry
+      - name: 📝 Generate requirements.txt
+        run: |
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
       - name: 💾 Cache dependencies
         id: cache-dependencies
         uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
       - name: ➕ Install dependencies
@@ -57,17 +60,18 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.14'
-      # Dummy comment to trigger semantic-release
-
       - name: 📦 Install Poetry
         run: |
           pipx install poetry
+      - name: 📝 Generate requirements.txt
+        run: |
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
       - name: 💾 Cache dependencies
         id: cache-dependencies
         uses: actions/cache@v4
         with:
           path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
       - name: ➕ Install dependencies
@@ -94,3 +98,5 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ steps.semantic_release.outputs.version }}
             ghcr.io/${{ github.repository }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
