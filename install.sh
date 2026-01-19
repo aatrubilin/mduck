@@ -108,8 +108,8 @@ mkdir -p "$INSTALL_DIR"
         info "Please provide the public webhook host for your bot (e.g., https://your-domain.com)."
         while true; do
             read -p "Enter TG__WEBHOOK__HOST: " TG_WEBHOOK_HOST
-            if [ -n "$TG_WEBHOOK__HOST" ]; then
-                sed -i.bak "s|TG__WEBHOOK__HOST=.*|TG__WEBHOOK__HOST=$TG_WEBHOOK__HOST|" .env
+            if [ -n "$TG_WEBHOOK_HOST" ]; then
+                sed -i.bak "s|TG__WEBHOOK__HOST=.*|TG__WEBHOOK__HOST=$TG_WEBHOOK_HOST|" .env
                 break
             else
                 echo -e "${C_RED}Webhook host cannot be empty. Please try again.${C_RESET}"
