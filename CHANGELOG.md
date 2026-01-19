@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.2.0 (2026-01-19)
+
+### Features
+
+- **deploy**: Add installation and update script
+  ([`712f368`](https://github.com/aatrubilin/mduck/commit/712f368bda519f77f6576ae60f66652f4827fccf))
+
+
 ## v1.1.1 (2026-01-19)
 
 ### Bug Fixes
