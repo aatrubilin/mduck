@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.4.0 (2026-01-19)
+
+### Features
+
+- **ollama**: Add configuration options to ollama service
+  ([`a0dee65`](https://github.com/aatrubilin/mduck/commit/a0dee65592001a3a674801bf9d7a5e285386dd4e))
+
+
 ## v1.3.1 (2026-01-19)
 
 ### Bug Fixes
