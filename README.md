@@ -12,7 +12,19 @@ A caustic Telegram bot service.
 
 This project implements a Telegram bot service designed to generate sarcastic and caustic comments in response to chat messages. Leveraging Ollama for natural language processing, the bot aims to provide "spicy" remarks, adding a unique flavor to group conversations.
 
-## Getting Started
+## Installation
+
+### One-Liner Install (Linux, macOS, WSL)
+
+To install or update the `mduck` service, run the following command in your terminal. The script will guide you through the process.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aatrubilin/mduck/master/install.sh | sh
+```
+
+**Note for Windows users**: This command should be run in **WSL (Windows Subsystem for Linux)**.
+
+## Development Setup
 
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
@@ -20,7 +32,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 This project uses [Poetry](https://python-poetry.org/) for dependency management and packaging. Ensure you have it installed before proceeding.
 
-### Installation
+### Local Installation
 
 Clone the repository and install the required dependencies using Poetry:
 
@@ -41,7 +53,7 @@ The webhook application will be available at `http://0.0.0.0:8000`. The `--reloa
 To run the pooling application locally, use the following command:
 
 ```bash
-poetry run run-pooling --log-level info
+poetry run run-pooling --reload --log-level debug
 ```
 
 ## Development
