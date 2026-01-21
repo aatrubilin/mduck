@@ -42,6 +42,7 @@ def test_main_function_runs_uvicorn_with_defaults() -> None:
                 host="0.0.0.0",
                 port=8000,
                 reload=False,
+                proxy_headers=True,
                 log_config=None,
                 factory=True,
             )
@@ -74,6 +75,7 @@ def test_main_function_runs_uvicorn_with_custom_args() -> None:
                 port=8080,
                 reload=True,
                 log_config=None,
+                proxy_headers=True,
                 factory=True,
                 reload_dirs=["src"],
             )

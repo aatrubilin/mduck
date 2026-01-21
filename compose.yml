@@ -1,5 +1,5 @@
 x-ollama-common: &ollama-common
-  image: ollama/ollama:0.14.3
+  image: ollama/ollama:0.14.2
   volumes:
     - ./data/ollama:/root/.ollama
   networks:

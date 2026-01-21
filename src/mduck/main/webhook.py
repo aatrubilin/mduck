@@ -10,7 +10,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from mduck.containers.application import ApplicationContainer
-from mduck.routers import healthcheck, webhook
+from mduck.routers import healthcheck, webhook, whoami
 from mduck.services.mduck import MDuckService
 from mduck.version import __version__
 
@@ -94,6 +94,7 @@ def create_app(
     app.state.container = container
     app.include_router(healthcheck.router)
     app.include_router(webhook.router)
+    app.include_router(whoami.router)
 
     return app
 
@@ -133,6 +134,7 @@ def main() -> None:
         "host": args.host,
         "port": args.port,
         "reload": args.reload,
+        "proxy_headers": True,
         "log_config": None,
         "factory": True,
     }

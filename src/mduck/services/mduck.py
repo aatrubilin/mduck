@@ -157,6 +157,7 @@ class MDuckService:
         """Send 'typing' chat action periodically until stop_event is set."""
         while not stop_event.is_set():
             try:
+                logger.info("Sending typing...")
                 await self._bot.send_chat_action(
                     chat_id=chat_id, action=ChatAction.TYPING
                 )
@@ -255,7 +256,7 @@ class MDuckService:
                 raise RuntimeError("Empty message text")
 
             # Send "typing" action in background
-            asyncio.create_task(self._send_typing_periodically(chat_id, event))
+            task = asyncio.create_task(self._send_typing_periodically(chat_id, event))
 
             if message.reply_to_message and message.reply_to_message.text:
                 if message.reply_to_message.from_user:
@@ -275,6 +276,9 @@ class MDuckService:
 
             # Generate response from Ollama asynchronously
             response_text = await self._ollama_repository.generate_response(prompt)
+
+            event.set()
+            task.cancel()
             # Send the response
             await message.answer(
                 response_text,
