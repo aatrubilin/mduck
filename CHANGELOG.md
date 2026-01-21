@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.5.3 (2026-01-21)
+
+### Bug Fixes
+
+- **compose**: Run mduck service as root to fix permission denied error
+  ([`da8d022`](https://github.com/aatrubilin/mduck/commit/da8d0228120ae78b9bd92f0fe88ce9fa3d4a1514))
+
+
 ## v1.5.2 (2026-01-21)
 
 ### Bug Fixes
