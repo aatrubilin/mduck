@@ -54,7 +54,7 @@ class OllamaRepository:
         """
         system_prompt = random.choice(self._system_prompts)
         logger.info("System prompt: %s", system_prompt)
-        logger.info("User prompt: %s", system_prompt)
+        logger.info("User prompt: %s", prompt)
         response = await self._client.chat(
             model=self._model,
             messages=[
