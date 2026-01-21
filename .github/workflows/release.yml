@@ -42,7 +42,7 @@ jobs:
       - name: 🧪 Run tests
         run: poetry run pytest --cov=src/mduck
       - name: 📛 Generate coverage badge
-        run: poetry run genbadge coverage -o assets/coverage.svg
+        run: poetry run genbadge coverage -i .coverage -o assets/coverage.svg
       - name: 💾 Commit coverage badge
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
