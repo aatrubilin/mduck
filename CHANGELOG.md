@@ -2,6 +2,22 @@
 
 <!-- version list -->
 
+## v1.10.1 (2026-01-21)
+
+### Bug Fixes
+
+- Remove usertag from message
+  ([`09dca8a`](https://github.com/aatrubilin/mduck/commit/09dca8a157713fb2ddba4f44b3577a6172fd02b9))
+
+- **install**: Improve error handling and fix duplicated code in install script
+  ([`ffef90a`](https://github.com/aatrubilin/mduck/commit/ffef90af484bf444afc7d54a575bff6127b81c9b))
+
+### Refactoring
+
+- **docker**: Streamline dependency installation in Dockerfile
+  ([`ffef90a`](https://github.com/aatrubilin/mduck/commit/ffef90af484bf444afc7d54a575bff6127b81c9b))
+
+
 ## v1.10.0 (2026-01-21)
 
 ### Bug Fixes
