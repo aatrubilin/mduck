@@ -1,4 +1,5 @@
 [![Made with Gemini](https://img.shields.io/badge/Made%20with-Gemini-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://gemini.google.com)
+[![Telegram Bot](https://img.shields.io/badge/Telegram-mduckbot-26A5E4?style=for-the-badge&logo=telegram)](https://t.me/mduckbot)
 
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/aatrubilin/mduck/release.yml)
@@ -6,11 +7,17 @@
 
 # MooDuck Bot `mduck`
 
-A caustic Telegram bot service.
+This project implements a Telegram bot service designed to generate
+sarcastic and caustic comments in response to chat messages.
+Leveraging Ollama for natural language processing, the bot aims to provide "spicy" remarks, adding a unique flavor to group conversations.
 
-## Overview
+![MooDuck Logo](assets/mduck-logo.png)
 
-This project implements a Telegram bot service designed to generate sarcastic and caustic comments in response to chat messages. Leveraging Ollama for natural language processing, the bot aims to provide "spicy" remarks, adding a unique flavor to group conversations.
+## Tested Environments
+
+This setup is designed to be lightweight and has been successfully tested on low-spec hardware:
+
+-   **Raspberry Pi 5 8GB**: The entire stack, including the bot and the Ollama language model, runs efficiently.
 
 ## Installation
 
