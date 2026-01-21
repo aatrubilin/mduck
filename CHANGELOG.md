@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.10.0 (2026-01-21)
+
+### Bug Fixes
+
+- Propagate context to background processor
+  ([`46207a7`](https://github.com/aatrubilin/mduck/commit/46207a7439e0423e43504c952fc2aa071be4e0ae))
+
+### Features
+
+- Add forwarded_allow_ips to uvicorn config
+  ([`52b6d5c`](https://github.com/aatrubilin/mduck/commit/52b6d5cf2abec5d61bcaefb2b69d2b710b11b464))
+
+
 ## v1.9.0 (2026-01-21)
 
 ### Features
