@@ -295,17 +295,21 @@ class MDuckService:
             else:
                 prompt = message.text
 
-            # Generate response from Ollama asynchronously
-            response_text = await self._ollama_repository.generate_response(prompt)
+            if prompt.startswith("@"):
+                prompt = prompt.split(" ", 1)[1]
+
+            if prompt:
+                # Generate response from Ollama asynchronously
+                response_text = await self._ollama_repository.generate_response(prompt)
+                # Send the response
+                await message.answer(
+                    response_text,
+                    parse_mode=ParseMode.MARKDOWN,
+                    reply_to_message_id=message.message_id,
+                )
 
             event.set()
             task.cancel()
-            # Send the response
-            await message.answer(
-                response_text,
-                parse_mode=ParseMode.MARKDOWN,
-                reply_to_message_id=message.message_id,
-            )
             logger.info("Replied to message in chat %s.", chat_id)
         except Exception as e:
             logger.error(
