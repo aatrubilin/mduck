@@ -160,7 +160,7 @@ class MDuckService:
         )
 
     async def _send_typing_periodically(
-        self, chat_id: int, stop_event: asyncio.Event, interval: int = 4
+        self, chat_id: int, stop_event: asyncio.Event, interval: int = 7
     ) -> None:
         """Send 'typing' chat action periodically until stop_event is set."""
         while not stop_event.is_set():
