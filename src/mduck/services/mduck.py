@@ -1,4 +1,5 @@
 import asyncio
+import contextvars
 import logging
 import random
 
@@ -147,7 +148,9 @@ class MDuckService:
             ChatType.GROUP.value: response_probability_group,
             ChatType.SUPERGROUP.value: response_probability_supergroup,
         }
-        self.message_queue: asyncio.Queue[types.Message] = asyncio.Queue()
+        self.message_queue: asyncio.Queue[tuple[contextvars.Context, types.Message]] = (
+            asyncio.Queue()
+        )
         self.chats_with_queued_message: set[int] = set()
         self._max_queue_size = max_queue_size
         logger.info(
@@ -239,7 +242,8 @@ class MDuckService:
                 )
                 return
 
-            self.message_queue.put_nowait(message)
+            context = contextvars.copy_context()
+            self.message_queue.put_nowait((context, message))
             self.chats_with_queued_message.add(message.chat.id)
             logger.info("Message from chat %s queued for processing.", message.chat.id)
         else:
@@ -260,7 +264,10 @@ class MDuckService:
 
         This method is intended to be run as a continuous background task.
         """
-        message = await self.message_queue.get()
+        context, message = await self.message_queue.get()
+        await context.run(self._process_message, message)
+
+    async def _process_message(self, message: types.Message) -> None:
         chat_id = message.chat.id
         logger.info("Processing message from chat %s from queue.", chat_id)
 
