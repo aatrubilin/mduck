@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.7.0 (2026-01-21)
+
+### Features
+
+- Improve reply handling and context
+  ([`67bea87`](https://github.com/aatrubilin/mduck/commit/67bea874469332991f4037581a576833d7460b40))
+
+
 ## v1.6.0 (2026-01-21)
 
 ### Features
