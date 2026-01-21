@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v1.6.0 (2026-01-21)
+
+### Features
+
+- Add healthchecksto compose.yaml
+  ([`cdf73a8`](https://github.com/aatrubilin/mduck/commit/cdf73a8d128fa5d481e1e7e8b27c3783ce7389f2))
+
+- Refactor new chat member handling
+  ([`a6fd318`](https://github.com/aatrubilin/mduck/commit/a6fd3181f8afa508f030eff02699301e92a2d3fe))
+
+
 ## v1.5.3 (2026-01-21)
 
 ### Bug Fixes
