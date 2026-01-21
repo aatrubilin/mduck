@@ -14,7 +14,11 @@ class ApplicationContainer(containers.DeclarativeContainer):
     """Application container."""
 
     wiring_config: containers.WiringConfiguration = containers.WiringConfiguration(
-        modules=["mduck.handlers.message", "mduck.routers.webhook"]
+        modules=[
+            "mduck.handlers.chat_member",
+            "mduck.handlers.message",
+            "mduck.routers.webhook",
+        ]
     )
     config: providers.Configuration = providers.Configuration(
         pydantic_settings=[settings],
