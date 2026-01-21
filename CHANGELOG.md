@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.7.1 (2026-01-21)
+
+### Bug Fixes
+
+- Dependency injector wiring
+  ([`a983cc3`](https://github.com/aatrubilin/mduck/commit/a983cc39b2d9e561a27ab5a67c7cb0067d600da3))
+
+### Refactoring
+
+- **compose**: Use YAML anchor to reduce duplication
+  ([`231c6aa`](https://github.com/aatrubilin/mduck/commit/231c6aa798e902bb40488ac45e80a1291776b4ad))
+
+
 ## v1.7.0 (2026-01-21)
 
 ### Features

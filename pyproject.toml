@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mduck"
-version = "1.7.0"
+version = "1.7.1"
 description = "A caustic Telegram bot service."
 authors = ["AATrubilin <aatrubilin@gmail.com>"]
 readme = "README.md"
@@ -35,7 +35,7 @@ watchdog = ">=6.0.0,<7.0.0"
 name = "cz_conventional_commits"
 tag_format = "v{version}"
 update_changelog_on_bump = true
-version = "1.7.0"
+version = "1.7.1"
 version_files = [
     "pyproject.toml:version",
 ]
