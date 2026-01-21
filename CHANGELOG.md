@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.10.4 (2026-01-21)
+
+### Bug Fixes
+
+- Proxy-headers
+  ([`d0be903`](https://github.com/aatrubilin/mduck/commit/d0be9033bef5c51ab64b86472f1665f258027081))
+
+
 ## v1.10.3 (2026-01-21)
 
 ### Bug Fixes
