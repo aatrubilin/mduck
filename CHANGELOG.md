@@ -2,6 +2,22 @@
 
 <!-- version list -->
 
+## v1.10.3 (2026-01-21)
+
+### Bug Fixes
+
+- Increase typing interval sending
+  ([`fd2462e`](https://github.com/aatrubilin/mduck/commit/fd2462e742394d6d60f264a95a54fac2875fa6dc))
+
+- Logging prompts
+  ([`87b745e`](https://github.com/aatrubilin/mduck/commit/87b745ed1247ed04427c87820e79b459afda041d))
+
+### Documentation
+
+- Specify model used for Raspberry Pi testing
+  ([`1e362b9`](https://github.com/aatrubilin/mduck/commit/1e362b92c8bae571daf40eeb9cfb52af94c80ff5))
+
+
 ## v1.10.2 (2026-01-21)
 
 ### Bug Fixes
