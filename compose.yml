@@ -17,7 +17,9 @@ services:
       - ./data/ollama:/root/.ollama
     environment:
       - OLLAMA_HOST=http://ollama:11434
-    command: "pull i82blikeu/gemma-3n-E4B-it-GGUF:Q3_K_M"
+    env_file:
+      - .env
+    command: "pull ${OLLAMA__MODEL}"
     depends_on:
       - ollama
     networks:

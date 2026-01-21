@@ -91,8 +91,8 @@ mkdir -p "$INSTALL_DIR"
     info "Downloading latest configuration files..."
     REPO_URL="https://raw.githubusercontent.com/aatrubilin/mduck/master"
     curl -fsSL "$REPO_URL/compose.yml" -o "compose.yml" || error "Failed to download compose.yml"
-    curl -fsSL "$REPO_URL/.env.example" -o ".env.example" || error "Failed to download .env.example"
-    success "Configuration files downloaded."
+
+    curl -fsSL "$REPO_URL/src/config/.env_sample" -o ".env_sample" || error "Failed to download .env_sample"
 
     # ---
     # 5. Configure .env file
@@ -100,7 +100,8 @@ mkdir -p "$INSTALL_DIR"
     info "Configuring environment..."
     if [ ! -f ".env" ]; then
         info "'.env' file not found. Creating a new one from the example."
-        cp .env.example .env
+        cp .env_sample .env
+        sed -i.bak "s/ENVIRONMENT=dev/ENVIRONMENT=prod/" .env
 
         info "Please provide your Telegram Bot Token."
         while true; do
