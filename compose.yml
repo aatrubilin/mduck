@@ -10,6 +10,12 @@ services:
       - ./data/ollama:/root/.ollama
     networks:
       - mduck-net
+    healthcheck:
+      test: ["CMD", "ollama", "ps"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
 
   download-model:
     image: ollama/ollama
@@ -21,7 +27,8 @@ services:
       - .env
     command: "pull ${OLLAMA__MODEL}"
     depends_on:
-      - ollama
+      ollama:
+        condition: service_healthy
     networks:
       - mduck-net
 
@@ -37,6 +44,8 @@ services:
     depends_on:
       download-model:
         condition: service_completed_successfully
+      ollama:
+        condition: service_healthy
     volumes:
       - ./data/logs:/var/log/mduck
     entrypoint: run-webhook
