@@ -284,17 +284,18 @@ class MDuckService:
             )
 
             if message.reply_to_message and message.reply_to_message.text:
-                if message.reply_to_message.from_user:
-                    msg_from = ", from ({replied_msg.from_user.full_name})"
+                replied_msg = message.reply_to_message
+                if replied_msg.from_user:
+                    msg_from = f", from ({replied_msg.from_user.full_name})"
                 else:
                     msg_from = ""
-                replied_msg = message.reply_to_message
                 prompt = (
                     "The user is now REPLYING to the previous message.\n"
                     f"Previous message{msg_from} "
                     "(the one being replied to): "
                     f"'''{replied_msg.text}'''\n"
-                    f"Current user's reply: '''{message.text}'''"
+                    f"Current user's reply (use lang of this reply message in answer): "
+                    f"'''{message.text}'''"
                 )
             else:
                 prompt = message.text
