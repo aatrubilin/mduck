@@ -40,7 +40,12 @@ jobs:
           poetry run ruff format --check src/mduck tests
           poetry run mypy --strict src/mduck
       - name: 🧪 Run tests
-        run: poetry run pytest
+        run: poetry run pytest --cov=src/mduck --cov-report=xml
+      - name: ⬆️ Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: true
 
   release:
     name: 🚀 Release

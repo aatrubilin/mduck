@@ -1,9 +1,10 @@
 [![Made with Gemini](https://img.shields.io/badge/Made%20with-Gemini-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://gemini.google.com)
-[![Telegram Bot](https://img.shields.io/badge/Telegram-mduckbot-26A5E4?style=for-the-badge&logo=telegram)](https://t.me/mduckbot)
+[![Telegram Bot](https://img.shields.io/badge/tg-@mduckbot-26A5E4?style=for-the-badge&logo=telegram)](https://t.me/mduckbot)
 
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/aatrubilin/mduck/release.yml)
 ![GitHub Release](https://img.shields.io/github/v/release/aatrubilin/mduck)
+[![codecov](https://codecov.io/gh/aatrubilin/mduck/branch/master/graph/badge.svg)](https://codecov.io/gh/aatrubilin/mduck)
 
 # MooDuck Bot `mduck`
 
