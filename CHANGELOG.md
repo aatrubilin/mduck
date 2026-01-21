@@ -2,6 +2,56 @@
 
 <!-- version list -->
 
+## v1.10.2 (2026-01-21)
+
+### Bug Fixes
+
+- Ensure context propagation for typing indicator task
+  ([`c1c0455`](https://github.com/aatrubilin/mduck/commit/c1c04556593edbbf684155911595cc6abb3bd6ce))
+
+- Peotry lock
+  ([`7c00dcf`](https://github.com/aatrubilin/mduck/commit/7c00dcfe9918b06c15e6b4455dfcd476ac5da566))
+
+- **ci**: Correct genbadge command for coverage badge
+  ([`a6408a8`](https://github.com/aatrubilin/mduck/commit/a6408a8e2b78d2210c0041a1c66816e2ef1cacd0))
+
+- **ci**: Fix coverage badge generation
+  ([`783709d`](https://github.com/aatrubilin/mduck/commit/783709de2ccf6ab2192ffa42e06f8ea5661afa5d))
+
+- **ci**: Grant write permissions to commit coverage badge
+  ([`c7b490b`](https://github.com/aatrubilin/mduck/commit/c7b490bef324692a1c55d6078dc059d20d2519d6))
+
+- **ci**: Synchronize with remote before release
+  ([`138b455`](https://github.com/aatrubilin/mduck/commit/138b455cd1dbaf2b6c29e68a9879af7a9ebb510d))
+
+- **deps**: Update poetry.lock for genbadge[coverage]
+  ([`8533681`](https://github.com/aatrubilin/mduck/commit/8533681acd47d6f16c5ac0ddbfb2dd0f53194fdd))
+
+### Chores
+
+- Add .gemini/ to .gitignore
+  ([`a19197a`](https://github.com/aatrubilin/mduck/commit/a19197a5b897f0d78d791bf51f7878d3e90f816b))
+
+- **ci**: Update coverage badge
+  ([`bf5cde0`](https://github.com/aatrubilin/mduck/commit/bf5cde078cd10bf5824c9586fdf1712de925f122))
+
+### Continuous Integration
+
+- Add test coverage reporting with Codecov
+  ([`8c4ced5`](https://github.com/aatrubilin/mduck/commit/8c4ced5ac3e0bda573a305425db58bac4de865e9))
+
+### Documentation
+
+- Add license and new badges to README
+  ([`1464898`](https://github.com/aatrubilin/mduck/commit/1464898e0cec8855ce80e7ff213808632f80a035))
+
+- Add license and new badges to README
+  ([`619f90f`](https://github.com/aatrubilin/mduck/commit/619f90f712dcec6678609f88478d04be9cd535ba))
+
+- Enhance README with logo, bot link, and RPi compatibility
+  ([`adffcf9`](https://github.com/aatrubilin/mduck/commit/adffcf936e83ec49c846375f3ac8196240dcfb01))
+
+
 ## v1.10.1 (2026-01-21)
 
 ### Bug Fixes
