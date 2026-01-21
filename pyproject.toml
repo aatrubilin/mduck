@@ -3,6 +3,7 @@ name = "mduck"
 version = "1.10.1"
 description = "A caustic Telegram bot service."
 authors = ["AATrubilin <aatrubilin@gmail.com>"]
+license = "MIT"
 readme = "README.md"
 packages = [{include = "mduck", from = "src"}]
 scripts = { run-webhook = "mduck.main.webhook:main", run-pooling = "mduck.main.pooling:main" }

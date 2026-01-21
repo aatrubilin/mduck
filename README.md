@@ -2,9 +2,14 @@
 [![Telegram Bot](https://img.shields.io/badge/tg-@mduckbot-26A5E4?style=for-the-badge&logo=telegram)](https://t.me/mduckbot)
 
 
+![GitHub last commit](https://img.shields.io/github/last-commit/aatrubilin/mduck)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/aatrubilin/mduck/release.yml)
 ![GitHub Release](https://img.shields.io/github/v/release/aatrubilin/mduck)
+
+![Python 3.14+](https://img.shields.io/badge/python-3.14+-blue.svg)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-black.svg)](https://github.com/astral-sh/ruff)
 [![codecov](https://codecov.io/gh/aatrubilin/mduck/branch/master/graph/badge.svg)](https://codecov.io/gh/aatrubilin/mduck)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # MooDuck Bot
 
