@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.5.1 (2026-01-21)
+
+### Bug Fixes
+
+- **compose**: Use wget for ollama healthcheck
+  ([`fc748a3`](https://github.com/aatrubilin/mduck/commit/fc748a32fb5223427771b725c9129a388108605d))
+
+
 ## v1.5.0 (2026-01-21)
 
 ### Features
