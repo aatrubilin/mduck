@@ -125,7 +125,7 @@ def main() -> None:
     parser.add_argument(
         "--forwarded-allow-ips",
         type=str,
-        default="192.168.1.*,192.168.2.*",
+        default="192.168.1.0/24,192.168.2.0/24",
         help="Comma-separated list of trusted proxy IPs.",
     )
 
