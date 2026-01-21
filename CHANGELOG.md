@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.9.0 (2026-01-21)
+
+### Features
+
+- Implement message queue size limit
+  ([`1cee232`](https://github.com/aatrubilin/mduck/commit/1cee232f149f2ae4293462b2ab3b75199c802044))
+
+
 ## v1.8.0 (2026-01-21)
 
 ### Features
