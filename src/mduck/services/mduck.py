@@ -208,9 +208,14 @@ class MDuckService:
 
         if not message.text:
             return
-
         bot_info: types.User = await self._bot.me()
-        if f"@{bot_info.username}" in message.text:
+        if f"@{bot_info.username}" in message.text or (
+            message.reply_to_message
+            and message.reply_to_message.text
+            and message.reply_to_message.from_user
+            and message.reply_to_message.from_user.id == self._bot.id
+        ):
+            logger.info("Reply to bot or tag bot")
             response_probability = 1.0
         else:
             response_probability = self._response_probability.get(
@@ -244,22 +249,38 @@ class MDuckService:
         chat_id = message.chat.id
         logger.info("Processing message from chat %s from queue.", chat_id)
 
+        event = asyncio.Event()
         try:
             if message.text is None:
                 raise RuntimeError("Empty message text")
 
             # Send "typing" action in background
-            event = asyncio.Event()
             asyncio.create_task(self._send_typing_periodically(chat_id, event))
 
-            # Generate response from Ollama asynchronously
-            response_text = await self._ollama_repository.generate_response(
-                message.text
-            )
-            event.set()
+            if message.reply_to_message and message.reply_to_message.text:
+                if message.reply_to_message.from_user:
+                    msg_from = ", from ({replied_msg.from_user.full_name})"
+                else:
+                    msg_from = ""
+                replied_msg = message.reply_to_message
+                prompt = (
+                    "The user is now REPLYING to the previous message.\n"
+                    f"Previous message{msg_from} "
+                    "(the one being replied to): "
+                    f"'''{replied_msg.text}'''\n"
+                    f"Current user's reply: '''{message.text}'''"
+                )
+            else:
+                prompt = message.text
 
+            # Generate response from Ollama asynchronously
+            response_text = await self._ollama_repository.generate_response(prompt)
             # Send the response
-            await message.answer(response_text, parse_mode=ParseMode.MARKDOWN)
+            await message.answer(
+                response_text,
+                parse_mode=ParseMode.MARKDOWN,
+                reply_to_message_id=message.message_id,
+            )
             logger.info("Replied to message in chat %s.", chat_id)
         except Exception as e:
             logger.error(
@@ -273,7 +294,8 @@ class MDuckService:
                     "  • flap wings aggressively\n"
                     "  • quack exactly three times\n"
                     "  • wait until I paddle back to shore\n"
-                    "Quaaaack… restarting in wet mode ♡"
+                    "Quaaaack… restarting in wet mode ♡",
+                    reply_to_message_id=message.message_id,
                 )
             except Exception as e2:
                 logger.error(
@@ -283,6 +305,7 @@ class MDuckService:
                     exc_info=True,
                 )
         finally:
+            event.set()
             self.chats_with_queued_message.remove(chat_id)
             self.message_queue.task_done()
             logger.debug("Chat %s removed from queued messages set.", chat_id)
