@@ -122,6 +122,12 @@ def main() -> None:
         choices=["human", "json"],
     )
     parser.add_argument("--log-file", type=str, help="Log file path.")
+    parser.add_argument(
+        "--forwarded-allow-ips",
+        type=str,
+        default="192.168.1.*,192.168.2.*",
+        help="Comma-separated list of trusted proxy IPs.",
+    )
 
     args = parser.parse_args()
     os.environ["LOG_LEVEL"] = args.log_level
@@ -135,6 +141,7 @@ def main() -> None:
         "port": args.port,
         "reload": args.reload,
         "proxy_headers": True,
+        "forwarded_allow_ips": args.forwarded_allow_ips,
         "log_config": None,
         "factory": True,
     }
