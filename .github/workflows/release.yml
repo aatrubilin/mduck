@@ -9,6 +9,8 @@ jobs:
   lint_and_test:
     name: 🧪 Lint & Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: 🛒 Checkout code
         uses: actions/checkout@v4
