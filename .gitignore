@@ -316,3 +316,6 @@ poetry.toml
 
 # Other
 compose.override.yml
+
+# Gemini specific files
+.gemini/

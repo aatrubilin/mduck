@@ -6,7 +6,7 @@
 ![GitHub Release](https://img.shields.io/github/v/release/aatrubilin/mduck)
 [![codecov](https://codecov.io/gh/aatrubilin/mduck/branch/master/graph/badge.svg)](https://codecov.io/gh/aatrubilin/mduck)
 
-# MooDuck Bot `mduck`
+# MooDuck Bot
 
 This project implements a Telegram bot service designed to generate
 sarcastic and caustic comments in response to chat messages.
