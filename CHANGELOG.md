@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.8.0 (2026-01-21)
+
+### Features
+
+- Add /whoami endpoint and improve typing indicator
+  ([`b9fbe32`](https://github.com/aatrubilin/mduck/commit/b9fbe32c10772032454ff9c84aff75ddfbcee551))
+
+
 ## v1.7.1 (2026-01-21)
 
 ### Bug Fixes
