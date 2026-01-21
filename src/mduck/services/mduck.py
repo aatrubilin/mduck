@@ -277,7 +277,11 @@ class MDuckService:
                 raise RuntimeError("Empty message text")
 
             # Send "typing" action in background
-            task = asyncio.create_task(self._send_typing_periodically(chat_id, event))
+            context = contextvars.copy_context()
+            task = context.run(
+                asyncio.create_task,
+                self._send_typing_periodically(chat_id, event),
+            )
 
             if message.reply_to_message and message.reply_to_message.text:
                 if message.reply_to_message.from_user:
