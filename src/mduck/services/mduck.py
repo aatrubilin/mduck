@@ -166,6 +166,31 @@ class MDuckService:
                 )
             await asyncio.sleep(interval)
 
+    async def _handle_bot_is_added(self, event: types.ChatMemberUpdated) -> None:
+        """Handle bot added."""
+        await event.answer("🦆 *MooDuck* entered the chat.", parse_mode="Markdown")
+        await event.answer_sticker(
+            "CAACAgIAAxkBAAM6aWn2HORULYp5Uiioos8LjHZrAUIAAvYAA1advQr3204hQD6lijgE",
+        )
+        await self._bot.send_chat_action(
+            chat_id=event.chat.id,
+            action=ChatAction.TYPING,
+        )
+        await asyncio.sleep(2)
+
+        await event.answer(
+            "Krak. Looks like this group needed more sarcasm.\n\n"
+            "I don't help. I judge.\n"
+            "I don't fix. I mock.\n\n"
+            "Too late to regret now.",
+        )
+
+    async def handle_new_chat_member(self, event: types.ChatMemberUpdated) -> None:
+        """Handle bot is added to chat."""
+        user = event.new_chat_member.user
+        if user.id == self._bot.id:
+            await self._handle_bot_is_added(event)
+
     async def handle_incoming_message(self, message: types.Message) -> None:
         """
         Handle an incoming message, deciding whether to queue it for a response.
@@ -175,15 +200,22 @@ class MDuckService:
 
         :param message: The incoming aiogram Message object.
         """
-        response_probability = self._response_probability.get(message.chat.type)
-        if response_probability is None or not message.text:
-            return
-
         if message.chat.id in self.chats_with_queued_message:
             logger.debug(
                 "Chat %s already has a message in queue, skipping.", message.chat.id
             )
             return
+
+        if not message.text:
+            return
+
+        bot_info: types.User = await self._bot.me()
+        if f"@{bot_info.username}" in message.text:
+            response_probability = 1.0
+        else:
+            response_probability = self._response_probability.get(
+                message.chat.type, 0.0
+            )
 
         probability = random.random()
         if probability < response_probability:
@@ -235,7 +267,13 @@ class MDuckService:
             )
             try:
                 await message.answer(
-                    "Извините, произошла ошибка при обработке вашего сообщения."
+                    "Quack! *ERROR* 0xQUACK\n"
+                    "Duck OS has temporarily lost control of the feathers.\n"
+                    "Suggested fixes:\n"
+                    "  • flap wings aggressively\n"
+                    "  • quack exactly three times\n"
+                    "  • wait until I paddle back to shore\n"
+                    "Quaaaack… restarting in wet mode ♡"
                 )
             except Exception as e2:
                 logger.error(
