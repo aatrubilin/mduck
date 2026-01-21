@@ -2,6 +2,20 @@
 
 <!-- version list -->
 
+## v1.5.0 (2026-01-21)
+
+### Features
+
+- Add file logging and healthchecks
+  ([`300a60a`](https://github.com/aatrubilin/mduck/commit/300a60a97d89647d9e4b00019774587820075aa9))
+
+- Improve environment configuration and setup process
+  ([`dd21e65`](https://github.com/aatrubilin/mduck/commit/dd21e65bbd3376e011690b1a6d67e6bd9eacf529))
+
+- **logging**: Introduce JSON and human-readable log formats
+  ([`7d871da`](https://github.com/aatrubilin/mduck/commit/7d871da5640df2f242e3a38c156c03416c06a986))
+
+
 ## v1.4.0 (2026-01-19)
 
 ### Features
