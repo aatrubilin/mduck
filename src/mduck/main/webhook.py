@@ -5,6 +5,7 @@ import logging
 import os
 from typing import AsyncGenerator
 
+import aiogram
 import uvicorn
 from fastapi import FastAPI
 
@@ -13,7 +14,7 @@ from mduck.routers import healthcheck, webhook
 from mduck.services.mduck import MDuckService
 from mduck.version import __version__
 
-logger = logging.getLogger("mduck")
+logger = logging.getLogger("mduck.main.webhook")
 
 
 async def run_mduck_processor(mduck: MDuckService) -> None:
@@ -28,8 +29,16 @@ def create_app(
     set_webhook_retry_timeout: float = 5.0,
 ) -> FastAPI:
     """Create and configure the FastAPI application."""
-    container = container or ApplicationContainer()
-    logging.basicConfig(level=os.environ.get("LOG_LEVEL", "info").upper())
+    if not container:
+        container = ApplicationContainer()
+        container.config.from_dict(
+            {
+                "log_level": os.environ.get("LOG_LEVEL", "info"),
+                "log_format": os.environ.get("LOG_FORMAT", "json"),
+                "service_name": "webhook",
+            }
+        )
+        container.logging()
 
     @contextlib.asynccontextmanager
     async def lifespan(app: FastAPI) -> "AsyncGenerator[None, None]":
@@ -41,11 +50,11 @@ def create_app(
         logger.info("MDuckService background processor started.")
 
         # Setup webhook
-        host = container.config.tg.webhook.host()  # type: ignore[attr-defined]
-        key = container.config.tg.webhook.key()  # type: ignore[attr-defined]
-        secret = container.config.tg.webhook.secret()  # type: ignore[attr-defined]
-        bot = container.gateways.bot()
-        dp = container.dispatcher()
+        host: str = container.config.tg.webhook.host()
+        key: str = container.config.tg.webhook.key()
+        secret: str = container.config.tg.webhook.secret()
+        bot: aiogram.Bot = container.gateways.bot()
+        dp: aiogram.Dispatcher = container.dispatcher()
 
         webhook_url = f"{host}/webhook/{key}"
         for i in range(1, set_webhook_retries):
@@ -73,6 +82,12 @@ def create_app(
         else:
             raise RuntimeError("Webhook setup failed.")
         yield
+        logger.info("On shutdown event...")
+
+        # Remove webhook
+        logger.info("Removing webhook...")
+        await bot.delete_webhook()
+        logger.info("Webhook removed.")
 
     app = FastAPI(version=__version__, lifespan=lifespan)
     app.state.container = container
@@ -90,17 +105,31 @@ def main() -> None:
     )
     parser.add_argument("--port", type=int, default=8000, help="Port to listen on.")
     parser.add_argument("--reload", action="store_true", help="Enable auto-reloading.")
-    parser.add_argument("--log-level", type=str, default="info", help="Log level.")
+    parser.add_argument(
+        "--log-level",
+        type=str,
+        default="info",
+        help="Log level.",
+        choices=["critical", "error", "warning", "info", "debug", "trace"],
+    )
+    parser.add_argument(
+        "--log-format",
+        type=str,
+        default="json",
+        help="Log format.",
+        choices=["human", "json"],
+    )
 
     args = parser.parse_args()
     os.environ["LOG_LEVEL"] = args.log_level
+    os.environ["LOG_FORMAT"] = args.log_format
 
     uvicorn_params = {
         "app": "mduck.main.webhook:create_app",
         "host": args.host,
         "port": args.port,
         "reload": args.reload,
-        "log_level": args.log_level,
+        "log_config": None,
         "factory": True,
     }
 

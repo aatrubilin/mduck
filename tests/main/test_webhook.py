@@ -31,6 +31,7 @@ def test_main_function_runs_uvicorn_with_defaults() -> None:
         mock_args.port = 8000
         mock_args.reload = False
         mock_args.log_level = "info"
+        mock_args.log_format = "human"
         mock_parser.return_value.parse_args.return_value = mock_args
 
         with patch("uvicorn.run") as mock_uvicorn_run:
@@ -40,7 +41,7 @@ def test_main_function_runs_uvicorn_with_defaults() -> None:
                 host="0.0.0.0",
                 port=8000,
                 reload=False,
-                log_level="info",
+                log_config=None,
                 factory=True,
             )
 
@@ -60,6 +61,7 @@ def test_main_function_runs_uvicorn_with_custom_args() -> None:
         mock_args.port = 8080
         mock_args.reload = True
         mock_args.log_level = "debug"
+        mock_args.log_format = "human"
         mock_parser.return_value.parse_args.return_value = mock_args
 
         with patch("uvicorn.run") as mock_uvicorn_run:
@@ -69,7 +71,7 @@ def test_main_function_runs_uvicorn_with_custom_args() -> None:
                 host="127.0.0.1",
                 port=8080,
                 reload=True,
-                log_level="debug",
+                log_config=None,
                 factory=True,
                 reload_dirs=["src"],
             )

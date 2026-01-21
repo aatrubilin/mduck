@@ -3,9 +3,10 @@
 from aiogram import Dispatcher
 from dependency_injector import containers, providers
 
-from config.settings import Settings, settings
+from config.settings import settings
 from mduck.containers.gateways import GatewaysContainer
 from mduck.dp import init_dispatcher
+from mduck.log import init_logging
 from mduck.services.mduck import MDuckService
 
 
@@ -15,7 +16,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
     wiring_config: containers.WiringConfiguration = containers.WiringConfiguration(
         modules=["mduck.handlers.message", "mduck.routers.webhook"]
     )
-    config: providers.Provider[Settings] = providers.Configuration(
+    config: providers.Configuration = providers.Configuration(
         pydantic_settings=[settings],
     )
 
@@ -28,9 +29,16 @@ class ApplicationContainer(containers.DeclarativeContainer):
         MDuckService,
         bot=gateways.bot,
         ollama_repository=gateways.ollama,
-        response_probability_private=config.mduck.response_probability_private,  # type: ignore
-        response_probability_group=config.mduck.response_probability_group,  # type: ignore
-        response_probability_supergroup=config.mduck.response_probability_supergroup,  # type: ignore
+        response_probability_private=config.mduck.response_probability_private,
+        response_probability_group=config.mduck.response_probability_group,
+        response_probability_supergroup=config.mduck.response_probability_supergroup,
     )
 
-    dispatcher: providers.Provider[Dispatcher] = providers.Resource(init_dispatcher)
+    dispatcher: providers.Provider[Dispatcher] = providers.Singleton(init_dispatcher)
+
+    logging = providers.Resource(
+        init_logging,
+        log_level=config.log_level,
+        log_format=config.log_format,
+        service_name=config.service_name,
+    )

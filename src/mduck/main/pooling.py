@@ -14,7 +14,7 @@ from watchdog.observers import Observer
 from mduck.containers.application import ApplicationContainer
 from mduck.services.mduck import MDuckService
 
-logger = logging.getLogger("mduck")
+logger = logging.getLogger(__name__)
 
 ROOT_PATH = Path(__file__).resolve().parent.parent.parent
 
@@ -96,6 +96,13 @@ def main() -> None:
         choices=["critical", "error", "warning", "info", "debug", "trace"],
     )
     parser.add_argument(
+        "--log-format",
+        type=str,
+        default="human",
+        help="Log format.",
+        choices=["human", "json"],
+    )
+    parser.add_argument(
         "--reload",
         action="store_true",
         help="Enable auto-reloading.",
@@ -103,12 +110,20 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    logging.basicConfig(level=args.log_level.upper())
+    container = ApplicationContainer()
+    container.config.from_dict(
+        {
+            "log_level": args.log_level,
+            "log_format": args.log_format,
+            "service_name": "pooling",
+        }
+    )
+    container.logging()
 
     if args.reload:
         run_reloader()
     else:
-        asyncio.run(start_pooling())
+        asyncio.run(start_pooling(container=container))
 
 
 if __name__ == "__main__":  # pragma: no cover

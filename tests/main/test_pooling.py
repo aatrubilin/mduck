@@ -48,17 +48,16 @@ async def test_start_pooling_with_container() -> None:
 
 
 @patch("mduck.main.pooling.start_pooling")
-@patch("mduck.main.pooling.logging.basicConfig")
 @patch("mduck.main.pooling.argparse.ArgumentParser")
 def test_main(
     mock_argparse: MagicMock,
-    mock_logging: MagicMock,
     mock_start_pooling: MagicMock,
 ) -> None:
     """Test the main function."""
     # Arrange
     mock_args = MagicMock()
     mock_args.log_level = "info"
+    mock_args.log_format = "human"
     mock_args.reload = False
     mock_argparse.return_value.parse_args.return_value = mock_args
 
@@ -67,22 +66,20 @@ def test_main(
 
     # Assert
     mock_argparse.assert_called_once_with(description="Run the pooling application.")
-    mock_logging.assert_called_once_with(level="INFO")
     mock_start_pooling.assert_called_once()
 
 
 @patch("mduck.main.pooling.run_reloader")
-@patch("mduck.main.pooling.logging.basicConfig")
 @patch("mduck.main.pooling.argparse.ArgumentParser")
 def test_main_with_reload(
     mock_argparse: MagicMock,
-    mock_logging: MagicMock,
     mock_run_reloader: MagicMock,
 ) -> None:
     """Test the main function with reload."""
     # Arrange
     mock_args = MagicMock()
     mock_args.log_level = "info"
+    mock_args.log_format = "human"
     mock_args.reload = True
     mock_argparse.return_value.parse_args.return_value = mock_args
 
@@ -91,7 +88,6 @@ def test_main_with_reload(
 
     # Assert
     mock_argparse.assert_called_once_with(description="Run the pooling application.")
-    mock_logging.assert_called_once_with(level="INFO")
     mock_run_reloader.assert_called_once()
 
 
