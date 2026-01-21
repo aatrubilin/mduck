@@ -22,6 +22,7 @@ Leveraging Ollama for natural language processing, the bot aims to provide "spic
 This setup is designed to be lightweight and has been successfully tested on low-spec hardware:
 
 -   **Raspberry Pi 5 8GB**: The entire stack, including the bot and the Ollama language model, runs efficiently.
+    The model used for testing was [i82blikeu/gemma-3n-E4B-it-GGUF:Q3_K_M](https://ollama.com/i82blikeu/gemma-3n-E4B-it-GGUF).
 
 ## Installation
 
