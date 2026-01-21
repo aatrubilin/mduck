@@ -66,6 +66,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # needed by semantic-release
+      - name: 🔄 Synchronize with remote master
+        run: git pull --rebase origin master
       - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
