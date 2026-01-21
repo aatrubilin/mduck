@@ -40,12 +40,14 @@ jobs:
           poetry run ruff format --check src/mduck tests
           poetry run mypy --strict src/mduck
       - name: 🧪 Run tests
-        run: poetry run pytest --cov=src/mduck --cov-report=xml
-      - name: ⬆️ Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        run: poetry run pytest --cov=src/mduck
+      - name: 📛 Generate coverage badge
+        run: poetry run genbadge coverage -o assets/coverage.svg
+      - name: 💾 Commit coverage badge
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          files: ./coverage.xml
-          fail_ci_if_error: true
+          commit_message: "chore(ci): Update coverage badge"
+          file_pattern: "assets/coverage.svg"
 
   release:
     name: 🚀 Release

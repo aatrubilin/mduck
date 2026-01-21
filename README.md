@@ -8,7 +8,7 @@
 
 ![Python 3.14+](https://img.shields.io/badge/python-3.14+-blue.svg)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-black.svg)](https://github.com/astral-sh/ruff)
-[![codecov](https://codecov.io/gh/aatrubilin/mduck/branch/master/graph/badge.svg)](https://codecov.io/gh/aatrubilin/mduck)
+![Coverage](assets/coverage.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # MooDuck Bot
