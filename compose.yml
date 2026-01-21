@@ -10,6 +10,12 @@ services:
       - ./data/ollama:/root/.ollama
     networks:
       - mduck-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   download-model:
     image: ollama/ollama
@@ -21,7 +27,8 @@ services:
       - .env
     command: "pull ${OLLAMA__MODEL}"
     depends_on:
-      - ollama
+      ollama:
+        condition: service_healthy
     networks:
       - mduck-net
 
@@ -34,7 +41,25 @@ services:
     networks:
       - mduck-net
     depends_on:
-      - download-model
+      download-model:
+        condition: service_completed_successfully
+      ollama:
+        condition: service_healthy
+    volumes:
+      - ./data/logs:/var/log/mduck
+    entrypoint: run-webhook
+    command: >
+      --host 0.0.0.0
+      --port 8000
+      --log-level info
+      --log-format human
+      --log-file /var/log/mduck/mduck.log
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
 networks:
   mduck-net:

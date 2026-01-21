@@ -41,4 +41,5 @@ class ApplicationContainer(containers.DeclarativeContainer):
         log_level=config.log_level,
         log_format=config.log_format,
         service_name=config.service_name,
+        log_file=config.log_file,
     )

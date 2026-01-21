@@ -102,6 +102,7 @@ def main() -> None:
         help="Log format.",
         choices=["human", "json"],
     )
+    parser.add_argument("--log-file", type=str, help="Log file path.")
     parser.add_argument(
         "--reload",
         action="store_true",
@@ -115,6 +116,7 @@ def main() -> None:
         {
             "log_level": args.log_level,
             "log_format": args.log_format,
+            "log_file": args.log_file,
             "service_name": "pooling",
         }
     )

@@ -3,6 +3,7 @@ import logging.config
 import sys
 from contextlib import contextmanager
 from contextvars import ContextVar
+from pathlib import Path
 from typing import Iterator
 
 from pythonjsonlogger.json import JsonFormatter
@@ -32,6 +33,7 @@ def init_logging(
     log_level: str = "INFO",
     log_format: str = "human",
     service_name: str = "undefined",
+    log_file: str | None = None,
 ) -> Iterator[None]:
     """Initialize logging using dictConfig."""
     service_name_var.set(service_name)
@@ -74,6 +76,25 @@ def init_logging(
         }
     }
 
+    if log_file:
+        log_file_path = Path(log_file)
+        if log_file_path.is_dir():
+            log_file_path = log_file_path / "mduck.log"
+        log_file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        handlers["file"] = {
+            "formatter": log_format,
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": log_file,
+            "maxBytes": 10485760,  # 10MB
+            "backupCount": 5,
+            "filters": ["context_filter"],
+        }
+
+    logger_handlers = ["default"]
+    if log_file:
+        logger_handlers.append("file")
+
     LOGGING_CONFIG = {
         "version": 1,
         "disable_existing_loggers": False,
@@ -82,27 +103,27 @@ def init_logging(
         "handlers": handlers,
         "loggers": {
             "mduck": {
-                "handlers": ["default"],
+                "handlers": logger_handlers,
                 "level": log_level,
                 "propagate": False,
             },
             "aiogram": {
-                "handlers": ["default"],
+                "handlers": logger_handlers,
                 "level": log_level,
                 "propagate": False,
             },
             "uvicorn": {
-                "handlers": ["default"],
+                "handlers": logger_handlers,
                 "level": log_level,
                 "propagate": False,
             },
             "uvicorn.error": {
-                "handlers": ["default"],
+                "handlers": logger_handlers,
                 "level": log_level,
                 "propagate": False,
             },
             "uvicorn.access": {
-                "handlers": ["default"],
+                "handlers": logger_handlers,
                 "level": log_level,
                 "propagate": False,
             },

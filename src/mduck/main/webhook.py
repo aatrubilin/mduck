@@ -35,6 +35,7 @@ def create_app(
             {
                 "log_level": os.environ.get("LOG_LEVEL", "info"),
                 "log_format": os.environ.get("LOG_FORMAT", "json"),
+                "log_file": os.environ.get("LOG_FILE"),
                 "service_name": "webhook",
             }
         )
@@ -119,10 +120,13 @@ def main() -> None:
         help="Log format.",
         choices=["human", "json"],
     )
+    parser.add_argument("--log-file", type=str, help="Log file path.")
 
     args = parser.parse_args()
     os.environ["LOG_LEVEL"] = args.log_level
     os.environ["LOG_FORMAT"] = args.log_format
+    if args.log_file:
+        os.environ["LOG_FILE"] = args.log_file
 
     uvicorn_params = {
         "app": "mduck.main.webhook:create_app",

@@ -58,6 +58,7 @@ def test_main(
     mock_args = MagicMock()
     mock_args.log_level = "info"
     mock_args.log_format = "human"
+    mock_args.log_file = None
     mock_args.reload = False
     mock_argparse.return_value.parse_args.return_value = mock_args
 
@@ -80,6 +81,7 @@ def test_main_with_reload(
     mock_args = MagicMock()
     mock_args.log_level = "info"
     mock_args.log_format = "human"
+    mock_args.log_file = None
     mock_args.reload = True
     mock_argparse.return_value.parse_args.return_value = mock_args
 

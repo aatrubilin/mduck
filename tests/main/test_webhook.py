@@ -32,6 +32,7 @@ def test_main_function_runs_uvicorn_with_defaults() -> None:
         mock_args.reload = False
         mock_args.log_level = "info"
         mock_args.log_format = "human"
+        mock_args.log_file = None
         mock_parser.return_value.parse_args.return_value = mock_args
 
         with patch("uvicorn.run") as mock_uvicorn_run:
@@ -62,6 +63,7 @@ def test_main_function_runs_uvicorn_with_custom_args() -> None:
         mock_args.reload = True
         mock_args.log_level = "debug"
         mock_args.log_format = "human"
+        mock_args.log_file = None
         mock_parser.return_value.parse_args.return_value = mock_args
 
         with patch("uvicorn.run") as mock_uvicorn_run:
