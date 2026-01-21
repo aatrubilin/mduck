@@ -131,12 +131,14 @@ class MDuckService:
         response_probability_private: float = 0.2,
         response_probability_group: float = 0.01,
         response_probability_supergroup: float = 0.001,
+        max_queue_size: int = 10,
     ) -> None:
         """
         Initialize the MDuckService.
 
         :param ollama_repository: The repository for interacting with Ollama.
         :param response_probability: The chance (0.0 to 1.0) of responding to a message.
+        :param max_queue_size: The maximum number of messages in the queue.
         """
         self._bot = bot
         self._ollama_repository = ollama_repository
@@ -147,8 +149,11 @@ class MDuckService:
         }
         self.message_queue: asyncio.Queue[types.Message] = asyncio.Queue()
         self.chats_with_queued_message: set[int] = set()
+        self._max_queue_size = max_queue_size
         logger.info(
-            "MDuckService initialized with probability: %s", self._response_probability
+            "MDuckService initialized with probability: %s, max_queue_size: %s",
+            self._response_probability,
+            self._max_queue_size,
         )
 
     async def _send_typing_periodically(
@@ -225,6 +230,15 @@ class MDuckService:
 
         probability = random.random()
         if probability < response_probability:
+            if len(self.chats_with_queued_message) >= self._max_queue_size:
+                logger.warning(
+                    "Message queue is full (%s messages), "
+                    "skipping message from chat %s.",
+                    self._max_queue_size,
+                    message.chat.id,
+                )
+                return
+
             self.message_queue.put_nowait(message)
             self.chats_with_queued_message.add(message.chat.id)
             logger.info("Message from chat %s queued for processing.", message.chat.id)

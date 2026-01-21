@@ -44,6 +44,7 @@ class MDuckSettings(BaseSettings):
     response_probability_private: float = 0.3
     response_probability_group: float = 0.3
     response_probability_supergroup: float = 0.3
+    max_queue_size: int = 10
 
 
 class Settings(BaseSettings):

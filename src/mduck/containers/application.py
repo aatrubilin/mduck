@@ -36,6 +36,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
         response_probability_private=config.mduck.response_probability_private,
         response_probability_group=config.mduck.response_probability_group,
         response_probability_supergroup=config.mduck.response_probability_supergroup,
+        max_queue_size=config.mduck.max_queue_size,
     )
 
     dispatcher: providers.Provider[Dispatcher] = providers.Singleton(init_dispatcher)
