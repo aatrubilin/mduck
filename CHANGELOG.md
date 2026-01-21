@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.5.2 (2026-01-21)
+
+### Bug Fixes
+
+- Fixed healthcheck for dockerfile
+  ([`e8afb71`](https://github.com/aatrubilin/mduck/commit/e8afb71524a960146862c6c8be6247e0fb3b8f9b))
+
+
 ## v1.5.1 (2026-01-21)
 
 ### Bug Fixes
