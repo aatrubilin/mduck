@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.10.5 (2026-01-21)
+
+### Bug Fixes
+
+- Prompts
+  ([`46fd19d`](https://github.com/aatrubilin/mduck/commit/46fd19db99f3ae1c6ec18f5f6e61a6010c700c7c))
+
+
 ## v1.10.4 (2026-01-21)
 
 ### Bug Fixes
