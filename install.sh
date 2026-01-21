@@ -83,16 +83,40 @@ if [[ "$(printf '%s\n' "$MIN_DOCKER_VERSION" "$DOCKER_VERSION" | sort -V | head 
 
 mkdir -p "$INSTALL_DIR"
     cd "$INSTALL_DIR" || error "Could not create or switch to directory: $INSTALL_DIR"
+
+    if ! touch "test_write" 2>/dev/null; then
+        error "No write permission in the directory: $INSTALL_DIR. Please check permissions."
+    fi
+    rm "test_write"
+
     success "Installation directory set to: $INSTALL_DIR"
+
+    # ---
+    # 3.5. Check for sufficient disk space
+    # ---
+    info "Checking for sufficient disk space..."
+    MIN_DISK_SPACE_KB=$((5 * 1024 * 1024)) # 5 GB
+    AVAILABLE_SPACE_KB=$(df -k . | awk 'NR==2 {print $4}')
+
+    if [ "$AVAILABLE_SPACE_KB" -lt "$MIN_DISK_SPACE_KB" ]; then
+        AVAILABLE_SPACE_GB=$(awk "BEGIN {printf \"%.2f\", $AVAILABLE_SPACE_KB / 1024 / 1024}")
+        REQUIRED_SPACE_GB=$(awk "BEGIN {printf \"%.2f\", $MIN_DISK_SPACE_KB / 1024 / 1024}")
+        error "Insufficient disk space. At least $REQUIRED_SPACE_GB GB is required, but only $AVAILABLE_SPACE_GB GB is available in the installation directory."
+    fi
+    success "Sufficient disk space available."
 
     # ---
     # 4. Download configuration files
     # ---
     info "Downloading latest configuration files..."
     REPO_URL="https://raw.githubusercontent.com/aatrubilin/mduck/master"
-    curl -fsSL "$REPO_URL/compose.yml" -o "compose.yml" || error "Failed to download compose.yml"
+    if ! curl -sSL "$REPO_URL/compose.yml" -o "compose.yml"; then
+        error "Failed to download compose.yml. Check your internet connection, the repository URL, or for write permissions issues."
+    fi
 
-    curl -fsSL "$REPO_URL/src/config/.env_sample" -o ".env_sample" || error "Failed to download .env_sample"
+    if ! curl -sSL "$REPO_URL/src/config/.env_sample" -o ".env_sample"; then
+        error "Failed to download .env_sample. Check your internet connection, the repository URL, or for write permissions issues."
+    fi
 
     # ---
     # 5. Configure .env file

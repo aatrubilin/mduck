@@ -15,22 +15,18 @@ FROM base AS builder
 
 WORKDIR /app
 
-# 1. Copy only dependency definition files to leverage caching
-COPY poetry.lock pyproject.toml /app/
+# Copy only dependency definition file to leverage caching
+COPY requirements.txt /app/
 
-# 2. Export dependencies to requirements.txt
-#    --without-hashes is used for broader compatibility
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
-
-# 3. Install dependencies using pip. This layer will be cached.
+# Install dependencies using pip. This layer will be cached.
 RUN pip install -r requirements.txt
 
-# 4. Now, copy the rest of the files needed for the project installation
-COPY README.md /app/
+# Copy the rest of the files needed for the project installation
+COPY poetry.lock pyproject.toml README.md /app/
 COPY src/ /app/src/
 
-# 5. Install the project itself. Poetry will recognize that the
-#    dependencies are already installed, so this step will be very fast.
+# Install the project itself. Poetry will recognize that the
+# dependencies are already installed, so this step will be very fast.
 RUN poetry install --only main
 
 # ---- Final Stage ----
