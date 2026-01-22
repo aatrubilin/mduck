@@ -20,5 +20,5 @@ class GatewaysContainer(containers.DeclarativeContainer):
         host=config.ollama.host,  # type: ignore
         model=config.ollama.model,  # type: ignore
         temperature=config.ollama.temperature,  # type: ignore
-        system_prompts_path=config.ollama.system_prompts_path,  # type: ignore
+        prompts_dir_path=config.ollama.prompts_dir_path,  # type: ignore
     )

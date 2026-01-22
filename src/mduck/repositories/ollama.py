@@ -1,6 +1,7 @@
-import json
 import logging
+import os
 import random
+from typing import Dict
 
 import ollama
 
@@ -15,7 +16,7 @@ class OllamaRepository:
         host: str,
         model: str,
         temperature: float,
-        system_prompts_path: str,
+        prompts_dir_path: str,
     ) -> None:
         """
         Initialize the OllamaRepository.
@@ -25,19 +26,30 @@ class OllamaRepository:
             host: The Ollama API host.
             model: The model to use for generating responses.
             temperature: The temperature to use for generating responses.
-            system_prompts_path: A path to list of system prompts.
+            prompts_dir_path: A path to a directory with .txt prompt files.
 
         """
         self._client = ollama.AsyncClient(host=host)
         self._model = model
         self._temperature = temperature
-        with open(system_prompts_path, "r") as fp:
-            self._system_prompts = json.load(fp)
+        self._system_prompts: Dict[str, str] = self._load_prompts(prompts_dir_path)
+        self._system_prompts_keys = list(self._system_prompts.keys())
         logger.info(
             "Ollama repo inited with host: %s, %s sys prompts",
             host,
             len(self._system_prompts),
         )
+
+    def _load_prompts(self, path: str) -> Dict[str, str]:
+        prompts = {}
+        for filename in os.listdir(path):
+            if filename.endswith(".txt"):
+                filepath = os.path.join(path, filename)
+                with open(filepath, "r", encoding="utf-8") as fp:
+                    prompts[filename] = fp.read().strip()
+        if not prompts:
+            raise ValueError(f"No prompts found in {path}")
+        return prompts
 
     async def generate_response(self, prompt: str) -> str:
         """
@@ -52,9 +64,9 @@ class OllamaRepository:
             The response from the Ollama API.
 
         """
-        system_prompt = random.choice(self._system_prompts)
-        logger.info("System prompt: %s", system_prompt)
-        logger.info("User prompt: %s", prompt)
+        random_key = random.choice(self._system_prompts_keys)
+        system_prompt = self._system_prompts[random_key]
+        logger.info("System prompt: %s", random_key)
         response = await self._client.chat(
             model=self._model,
             messages=[
@@ -63,6 +75,6 @@ class OllamaRepository:
             ],
             options=ollama.Options(temperature=self._temperature),
         )
-        if response.message.content is None:
-            raise RuntimeError("Empty response from ollama")
-        return response.message.content
+        if response.message and response.message.content:
+            return response.message.content
+        raise RuntimeError("Empty response from ollama")
