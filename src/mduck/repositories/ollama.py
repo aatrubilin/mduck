@@ -1,7 +1,6 @@
 import logging
-import os
 import random
-from typing import Dict
+from pathlib import Path
 
 import ollama
 
@@ -32,7 +31,7 @@ class OllamaRepository:
         self._client = ollama.AsyncClient(host=host)
         self._model = model
         self._temperature = temperature
-        self._system_prompts: Dict[str, str] = self._load_prompts(prompts_dir_path)
+        self._system_prompts: dict[str, str] = self._load_prompts(prompts_dir_path)
         self._system_prompts_keys = list(self._system_prompts.keys())
         logger.info(
             "Ollama repo inited with host: %s, %s sys prompts",
@@ -40,13 +39,11 @@ class OllamaRepository:
             len(self._system_prompts),
         )
 
-    def _load_prompts(self, path: str) -> Dict[str, str]:
+    def _load_prompts(self, path: str) -> dict[str, str]:
         prompts = {}
-        for filename in os.listdir(path):
-            if filename.endswith(".txt"):
-                filepath = os.path.join(path, filename)
-                with open(filepath, "r", encoding="utf-8") as fp:
-                    prompts[filename] = fp.read().strip()
+        for filepath in Path(path).glob("*.txt"):
+            with open(filepath, "r", encoding="utf-8") as fp:
+                prompts[filepath.name] = fp.read().strip()
         if not prompts:
             raise ValueError(f"No prompts found in {path}")
         return prompts
