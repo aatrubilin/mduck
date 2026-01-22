@@ -3,6 +3,7 @@ import random
 from pathlib import Path
 
 import ollama
+from ollama import ChatResponse
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ class OllamaRepository:
             raise ValueError(f"No prompts found in {path}")
         return prompts
 
-    async def generate_response(self, prompt: str) -> str:
+    async def generate_response(self, prompt: str) -> ChatResponse:
         """
         Generate a response from the Ollama API.
 
@@ -63,15 +64,19 @@ class OllamaRepository:
         """
         random_key = random.choice(self._system_prompts_keys)
         system_prompt = self._system_prompts[random_key]
-        logger.info("System prompt: %s", random_key)
+        num_predict = random.randint(100, 200) if random.random() < 0.5 else None
+        logger.info("System prompt: %s, num_predict=%s", random_key, num_predict)
+
         response = await self._client.chat(
             model=self._model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt},
             ],
-            options=ollama.Options(temperature=self._temperature),
+            options=ollama.Options(
+                temperature=self._temperature,
+                top_p=0.9,
+                num_predict=num_predict,
+            ),
         )
-        if response.message and response.message.content:
-            return response.message.content
-        raise RuntimeError("Empty response from ollama")
+        return response

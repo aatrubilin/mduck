@@ -283,32 +283,40 @@ class MDuckService:
                 self._send_typing_periodically(chat_id, event),
             )
 
-            if message.reply_to_message and message.reply_to_message.text:
-                replied_msg = message.reply_to_message
-                if replied_msg.from_user:
-                    msg_from = f", from ({replied_msg.from_user.full_name})"
-                else:
-                    msg_from = ""
-                prompt = (
-                    "The user is now REPLYING to the previous message.\n"
-                    f"Previous message{msg_from} "
-                    "(the one being replied to): "
-                    f"'''{replied_msg.text}'''\n"
-                    f"Current user's reply (use lang of this reply message in answer): "
-                    f"'''{message.text}'''"
-                )
-            else:
-                prompt = message.text
+            prompt = message.text
 
             if prompt.startswith("@"):
                 prompt = prompt.split(" ", 1)[1]
 
             if prompt:
-                # Generate response from Ollama asynchronously
-                response_text = await self._ollama_repository.generate_response(prompt)
+                response = await self._ollama_repository.generate_response(prompt)
+
+                if response.message and response.message.content:
+                    text = response.message.content.strip()
+                else:
+                    raise RuntimeError("Missed contente response...")
+                if random.random() <= 0.2:
+                    logger.debug("Add 🦆🦆🦆")
+                    text += "🦆"
+
+                eval_count = response.eval_count or 0
+                eval_duration = response.eval_duration or 1
+
+                tps = eval_count / eval_duration * 1e9
+                duration = (response.total_duration or 0) / 1e9
+
+                meta = (
+                    f"Duration: {duration:.2f}sec\n"
+                    f"Tokens: {response.prompt_eval_count} -> {response.eval_count}\n"
+                    f"Speed: {tps:.1f}tps"
+                )
+
+                if message.chat.type == ChatType.PRIVATE:
+                    text += f"\n\n```metadata\n{meta}```"
+
                 # Send the response
                 await message.answer(
-                    response_text,
+                    text,
                     parse_mode=ParseMode.MARKDOWN,
                     reply_to_message_id=message.message_id,
                 )
