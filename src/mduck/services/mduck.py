@@ -31,7 +31,7 @@ class MDuckService:
         "I care. Deeply. **Not.**",
         "Neat. Tell someone who cares.",
         "Oh, the drama. 🎭",
-        "File that under *“who asked?”*",
+        'File that under *"who asked?"*',
         "Gasp. Not really.",
         "Earth-shattering. Like a wet sock. 🧦",
         "Color me uninterested.",
@@ -50,9 +50,9 @@ class MDuckService:
         "Oh joy. Another word salad. 🥗",
         "That’s one way to waste air.",
         "My tail feathers are trembling. 🪶",
-        "I’ll put that in my *“meh”* folder.",
+        'I’ll put that in my *"meh"* folder.',
         "You done, or is there more pain?",
-        "That’s a no from me, duckling. ❌",
+        "That’s a no from me, duckling.❌",
         "I’m riveted. To the exit. 🚪",
         "Quacktastic. In the worst way.",
         "I’d care less, but physics won’t allow it.",
@@ -87,7 +87,7 @@ class MDuckService:
         "My silence is applause. 👏",
         "You’ve outdone yourself. Again. Sadly.",
         "I’m stunned. Into apathy.",
-        "That? A masterpiece of *‘meh’*.",
+        'That? A masterpiece of *"meh"*.',
         "I’m crying. From boredom. 😢",
         "Oh no. Anyway. 🙃",
         "You brought words. I brought regret.",
@@ -160,7 +160,10 @@ class MDuckService:
         )
 
     async def _send_typing_periodically(
-        self, chat_id: int, stop_event: asyncio.Event, interval: int = 7
+        self,
+        chat_id: int,
+        stop_event: asyncio.Event,
+        interval: int = 7,
     ) -> None:
         """Send 'typing' chat action periodically until stop_event is set."""
         while not stop_event.is_set():
@@ -265,7 +268,17 @@ class MDuckService:
         This method is intended to be run as a continuous background task.
         """
         context, message = await self.message_queue.get()
-        await context.run(self._process_message, message)
+
+        def sync_runner() -> asyncio.Task[None]:
+            # This function is run by context.run, so it executes
+            # within the captured context.
+            # asyncio.create_task will then inherit this context.
+            return asyncio.create_task(self._process_message(message))
+
+        # context.run executes the sync function, which creates a task
+        # that now runs with the correct context.
+        task = context.run(sync_runner)
+        await task  # Wait for the task to complete.
 
     async def _process_message(self, message: types.Message) -> None:
         chat_id = message.chat.id
@@ -277,11 +290,7 @@ class MDuckService:
                 raise RuntimeError("Empty message text")
 
             # Send "typing" action in background
-            context = contextvars.copy_context()
-            task = context.run(
-                asyncio.create_task,
-                self._send_typing_periodically(chat_id, event),
-            )
+            task = asyncio.create_task(self._send_typing_periodically(chat_id, event))
 
             prompt = message.text
 
@@ -289,7 +298,9 @@ class MDuckService:
                 prompt = prompt.split(" ", 1)[1]
 
             if prompt:
-                response = await self._ollama_repository.generate_response(prompt)
+                template, response = await self._ollama_repository.generate_response(
+                    prompt
+                )
 
                 if response.message and response.message.content:
                     text = response.message.content.strip()
@@ -308,7 +319,8 @@ class MDuckService:
                 meta = (
                     f"Duration: {duration:.2f}sec\n"
                     f"Tokens: {response.prompt_eval_count} -> {response.eval_count}\n"
-                    f"Speed: {tps:.1f}tps"
+                    f"Speed: {tps:.1f}tps\n"
+                    f"Prompt: {template}"
                 )
 
                 if message.chat.type == ChatType.PRIVATE:

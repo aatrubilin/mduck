@@ -49,7 +49,7 @@ class OllamaRepository:
             raise ValueError(f"No prompts found in {path}")
         return prompts
 
-    async def generate_response(self, prompt: str) -> ChatResponse:
+    async def generate_response(self, prompt: str) -> tuple[str, ChatResponse]:
         """
         Generate a response from the Ollama API.
 
@@ -59,13 +59,14 @@ class OllamaRepository:
 
         Returns:
         -------
-            The response from the Ollama API.
+            Template name and response from the Ollama API.
 
         """
         random_key = random.choice(self._system_prompts_keys)
         system_prompt = self._system_prompts[random_key]
-        num_predict = random.randint(100, 200) if random.random() < 0.5 else None
-        logger.info("System prompt: %s, num_predict=%s", random_key, num_predict)
+
+        # num_predict = random.randint(100, 200) if random.random() < 0.5 else None
+        # logger.info("System prompt: %s, num_predict=%s", random_key, num_predict)
 
         response = await self._client.chat(
             model=self._model,
@@ -76,7 +77,7 @@ class OllamaRepository:
             options=ollama.Options(
                 temperature=self._temperature,
                 top_p=0.9,
-                num_predict=num_predict,
+                num_predict=None,
             ),
         )
-        return response
+        return random_key, response
