@@ -2,6 +2,36 @@
 
 <!-- version list -->
 
+## v1.11.0 (2026-01-24)
+
+### Chores
+
+- **ci**: Update coverage badge
+  ([`d6ca7be`](https://github.com/aatrubilin/mduck/commit/d6ca7bec24e198e1ffaf9dae3a1afcec34f87515))
+
+### Features
+
+- Add and refine prompt examples, introduce new personas
+  ([`d726b05`](https://github.com/aatrubilin/mduck/commit/d726b05cf4200476bf01cab0df2306368eb37467))
+
+- Fix context propagation and refine Ollama integration
+  ([`f28cbb3`](https://github.com/aatrubilin/mduck/commit/f28cbb3d539aff66a3ff129ded8767943261186d))
+
+- **ollama**: Enhance Ollama response handling and metadata
+  ([`c94ad56`](https://github.com/aatrubilin/mduck/commit/c94ad5635d2c94fe61e21895bc62a084be4962b3))
+
+- **ollama**: Update Ollama Docker image to alpine/ollama:0.12.10
+  ([`b6be51e`](https://github.com/aatrubilin/mduck/commit/b6be51ed6cc00c9c3bd950667ded475fcc3097fb))
+
+### Refactoring
+
+- **ollama**: Load system prompts from a directory
+  ([`cfc68e0`](https://github.com/aatrubilin/mduck/commit/cfc68e0de33d39477a3eadf02784d6e0c7bf7583))
+
+- **ollama**: Use pathlib.Path for prompt loading
+  ([`fe8d7ca`](https://github.com/aatrubilin/mduck/commit/fe8d7ca9bab29b8987b94fb886048447621d5e1c))
+
+
 ## v1.10.5 (2026-01-21)
 
 ### Bug Fixes
