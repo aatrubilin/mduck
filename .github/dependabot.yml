@@ -1,0 +1,40 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "aatrubilin"
+    reviewers:
+      - "aatrubilin"
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "aatrubilin"
+    reviewers:
+      - "aatrubilin"
+    groups:
+      docker-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "aatrubilin"
+    reviewers:
+      - "aatrubilin"
+    groups:
+      github-actions-dependencies:
+        patterns:
+          - "*"
