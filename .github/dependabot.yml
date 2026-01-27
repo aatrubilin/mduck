@@ -12,6 +12,7 @@ updates:
       python-dependencies:
         patterns:
           - "*"
+    versioning-strategy: widen
 
   - package-ecosystem: "docker"
     directory: "/"
@@ -25,6 +26,7 @@ updates:
       docker-dependencies:
         patterns:
           - "*"
+    versioning-strategy: widen
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -38,3 +40,4 @@ updates:
       github-actions-dependencies:
         patterns:
           - "*"
+    versioning-strategy: widen
