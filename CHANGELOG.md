@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.12.0 (2026-01-27)
+
+### Chores
+
+- **deps**: Bump the github-actions-dependencies group with 4 updates
+  ([`bf311f6`](https://github.com/aatrubilin/mduck/commit/bf311f6241e6a7cc42e9c303a95e420d883d29ac))
+
+### Features
+
+- Add Dependabot for dependency management
+  ([`5e9cd94`](https://github.com/aatrubilin/mduck/commit/5e9cd9485228c06d29b2ab58b5379a41abe7bcd4))
+
+
 ## v1.11.0 (2026-01-24)
 
 ### Chores
