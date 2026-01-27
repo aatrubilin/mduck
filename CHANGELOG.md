@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.13.0 (2026-01-27)
+
+### Chores
+
+- **deps-dev**: Bump the python-dependencies group with 3 updates
+  ([`3b286a0`](https://github.com/aatrubilin/mduck/commit/3b286a00bb73a43bc38a06703258cd9a4d47bb98))
+
+### Features
+
+- Configure Dependabot to widen versioning strategy
+  ([`480865d`](https://github.com/aatrubilin/mduck/commit/480865d25464b8b56411c54ca6dad4745dc7e679))
+
+
 ## v1.12.0 (2026-01-27)
 
 ### Chores
