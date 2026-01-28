@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mduck"
-version = "1.13.0"
+version = "1.14.0"
 description = "A caustic Telegram bot service."
 authors = ["AATrubilin <aatrubilin@gmail.com>"]
 license = "MIT"
@@ -39,7 +39,7 @@ pytest-httpx = "^0.36.0"
 name = "cz_conventional_commits"
 tag_format = "v{version}"
 update_changelog_on_bump = true
-version = "1.13.0"
+version = "1.14.0"
 version_files = [
     "pyproject.toml:version",
 ]

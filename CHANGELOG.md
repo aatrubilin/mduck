@@ -2,6 +2,32 @@
 
 <!-- version list -->
 
+## v1.14.0 (2026-01-28)
+
+### Chores
+
+- **ci**: Update coverage badge
+  ([`98128b9`](https://github.com/aatrubilin/mduck/commit/98128b951d7cc457cf7db4d18f379c37b3bc3446))
+
+### Features
+
+- Add comprehensive tests for MDuckService
+  ([`1c8d81d`](https://github.com/aatrubilin/mduck/commit/1c8d81dda9937c3ea92479ddded097096437e904))
+
+- Add tests for webhook and whoami routers
+  ([`e6ca554`](https://github.com/aatrubilin/mduck/commit/e6ca554ba9f510a886037e9dd70e75b8d1416820))
+
+### Refactoring
+
+- Improve test suite consistency and reduce redundancy
+  ([`d764ee0`](https://github.com/aatrubilin/mduck/commit/d764ee02f26dfc568c25b8ed80b8442fa6db2b99))
+
+### Testing
+
+- Add unit test for chat_member handler
+  ([`e13dc7d`](https://github.com/aatrubilin/mduck/commit/e13dc7d5a1f3c0498d957430df1a6ef189f87cfa))
+
+
 ## v1.13.0 (2026-01-27)
 
 ### Chores
