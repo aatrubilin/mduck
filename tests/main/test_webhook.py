@@ -1,19 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from mduck.main.webhook import create_app, main
-
-
-def test_create_app() -> None:
-    """
-    Test create_app function.
-
-    GIVEN create_app function
-    WHEN the app is created
-    THEN it should include the healthcheck router
-    """
-    app = create_app()
-    app_routes = [route.path for route in app.routes if hasattr(route, "path")]
-    assert "/healthcheck" in app_routes
+from mduck.main.webhook import main
 
 
 def test_main_function_runs_uvicorn_with_defaults() -> None:

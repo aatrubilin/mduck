@@ -4,17 +4,20 @@ import pytest
 from aiogram import types
 from aiogram.enums import ChatAction
 
+from mduck.containers.application import ApplicationContainer
 from mduck.handlers.commands import command_start_handler
 
 
 @pytest.mark.asyncio
 @patch("asyncio.sleep", return_value=None)
-async def test_command_start_handler(mock_sleep: MagicMock) -> None:
+async def test_command_start_handler(
+    mock_sleep: MagicMock, container: ApplicationContainer
+) -> None:
     """Test the command_start_handler."""
     # Arrange
-    mock_bot = AsyncMock()
+    bot = container.gateways.bot()
     mock_message = AsyncMock(spec=types.Message)
-    mock_message.bot = mock_bot
+    mock_message.bot = bot
     mock_chat = MagicMock()
     mock_chat.id = 12345
     mock_message.chat = mock_chat
@@ -28,8 +31,8 @@ async def test_command_start_handler(mock_sleep: MagicMock) -> None:
     mock_message.answer_sticker.assert_called_once_with(
         "CAACAgIAAxkBAAMaaWnlQfMMkd91ugpq_xKaf2_FH3UAAgUBAAJWnb0Kt-T9tg5FX3c4BA"
     )
-    mock_bot.send_chat_action.assert_any_call(chat_id=12345, action=ChatAction.TYPING)
-    assert mock_bot.send_chat_action.call_count == 2
+    bot.send_chat_action.assert_any_call(chat_id=12345, action=ChatAction.TYPING)
+    assert bot.send_chat_action.call_count == 2
     mock_sleep.assert_any_call(2)
     assert mock_sleep.call_count == 2
     mock_message.answer.assert_any_call(

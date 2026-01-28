@@ -2225,6 +2225,25 @@ pytest = ">=7"
 testing = ["process-tests", "pytest-xdist", "virtualenv"]
 
 [[package]]
+name = "pytest-httpx"
+version = "0.36.0"
+description = "Send responses to httpx."
+optional = false
+python-versions = ">=3.10"
+groups = ["dev"]
+files = [
+    {file = "pytest_httpx-0.36.0-py3-none-any.whl", hash = "sha256:bd4c120bb80e142df856e825ec9f17981effb84d159f9fa29ed97e2357c3a9c8"},
+    {file = "pytest_httpx-0.36.0.tar.gz", hash = "sha256:9edb66a5fd4388ce3c343189bc67e7e1cb50b07c2e3fc83b97d511975e8a831b"},
+]
+
+[package.dependencies]
+httpx = "==0.28.*"
+pytest = "==9.*"
+
+[package.extras]
+testing = ["pytest-asyncio (==1.*)", "pytest-cov (==7.*)"]
+
+[[package]]
 name = "python-dotenv"
 version = "1.2.1"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -3013,4 +3032,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<3.15"
-content-hash = "43447caeee7ad41b4a5106bced1060a8834e488884190ef695539acb4b98e281"
+content-hash = "6345010a930085def0fbfc1436898e9731eb94fd7b47ba915fc5da6d2a570f1f"

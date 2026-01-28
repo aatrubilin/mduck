@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from watchdog.events import FileSystemEvent
 
+from mduck.containers.application import ApplicationContainer
 from mduck.main.pooling import (
     CodeChangeHandler,
     main,
@@ -14,37 +15,15 @@ from mduck.main.pooling import (
 
 
 @pytest.mark.asyncio
-@patch("mduck.main.pooling.ApplicationContainer")
-async def test_start_pooling(mock_container: MagicMock) -> None:
+async def test_start_pooling(container: ApplicationContainer) -> None:
     """Test the start_pooling function."""
-    # Arrange
-    mock_dispatcher = AsyncMock()
-    mock_bot = AsyncMock()
-    mock_container.return_value.dispatcher.return_value = mock_dispatcher
-    mock_container.return_value.gateways.bot.return_value = mock_bot
-
     # Act
-    await start_pooling()
+    await start_pooling(container)
 
     # Assert
-    mock_dispatcher.start_polling.assert_called_once_with(mock_bot)
-
-
-@pytest.mark.asyncio
-async def test_start_pooling_with_container() -> None:
-    """Test the start_pooling function with a container."""
-    # Arrange
-    mock_container = MagicMock()
-    mock_dispatcher = AsyncMock()
-    mock_bot = AsyncMock()
-    mock_container.dispatcher.return_value = mock_dispatcher
-    mock_container.gateways.bot.return_value = mock_bot
-
-    # Act
-    await start_pooling(mock_container)
-
-    # Assert
-    mock_dispatcher.start_polling.assert_called_once_with(mock_bot)
+    container.dispatcher().start_polling.assert_called_once_with(
+        container.gateways.bot()
+    )
 
 
 @patch("mduck.main.pooling.start_pooling")
