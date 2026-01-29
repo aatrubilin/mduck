@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.15.0 (2026-01-29)
+
+### Chores
+
+- **ci**: Update coverage badge
+  ([`e8d4a12`](https://github.com/aatrubilin/mduck/commit/e8d4a121ea5344a031f6e7125b1fc1544ccb0cd7))
+
+### Features
+
+- Added sticker-pack
+  ([`d0fb8cf`](https://github.com/aatrubilin/mduck/commit/d0fb8cf93972d639c8736424136b56008fa73d17))
+
+
 ## v1.14.0 (2026-01-28)
 
 ### Chores
