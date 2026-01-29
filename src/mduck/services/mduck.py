@@ -125,6 +125,30 @@ class MDuckService:
         "You done flapping, or should I nap? 😴",
     ]
 
+    STICKER_PACKS = [
+        {
+            "1_quack_you": "CAACAgIAAxkBAAPRaXuwcTrfizLyamUwc4Vd4B5sHsAAAh2VAAKh7NlLexqb66bnMPc4BA",  # noqa: E501
+            "2_facepalm": "CAACAgIAAxkBAAPXaXuxPwx10wKX0SS-HcEs2rWEJTcAAvaUAAJQ3dlL95OViFZHxwY4BA",  # noqa: E501
+            "3_hello": "CAACAgIAAxkBAAPZaXuxVR1SkwZbeqYQZmFIPzQe-OYAAh6cAAKn1OBLCoJ3OTCgAAEROAQ",  # noqa: E501
+            "4_duck_off": "CAACAgIAAxkBAAPbaXuxZrFuK4gIgG_JGMQU0yVCOYwAAmWTAAJ1r-FLu67QV4xDNG04BA",  # noqa: E501
+            "5_get_lost": "CAACAgIAAxkBAAPdaXuxcW0anUzG9EWVWGg1ORNhgncAApCVAAIaFuBLZx4TxJrh7_g4BA",  # noqa: E501
+            "6_i_dont_give_a_quack": "CAACAgIAAxkBAAPfaXuxfEgc4si8l7UJymXdgeHW5DIAAjCNAAJIROBLcoRw4CzIS3k4BA",  # noqa: E501
+            "7_krak_if_you_dare": "CAACAgIAAxkBAAPfaXuxfEgc4si8l7UJymXdgeHW5DIAAjCNAAJIROBLcoRw4CzIS3k4BA",  # noqa: E501
+            "8_shut_it": "CAACAgIAAxkBAAPhaXuxnbwEA8vC50aNBk-xuSDPWA0AAlGgAAJqx9lLiEiTaTsF7m44BA",  # noqa: E501
+            "9_youve_quacked_your_last": "CAACAgIAAxkBAAPjaXuxqKXaSPDn_oqR5qJrDLr3ThUAAsaOAAL7xeFLJzkAAcSOrNveOAQ",  # noqa: E501
+            "10_quack_you_v2": "CAACAgIAAxkBAAPlaXuxtUxHwmvpKx_26fxI8j0h-5gAAnWRAAJ3rOFLaH-EREb78to4BA",  # noqa: E501
+        }
+    ]
+
+    WELCOME_STICKERS = [
+        STICKER_PACKS[0]["1_quack_you"],
+        STICKER_PACKS[0]["2_facepalm"],
+        STICKER_PACKS[0]["3_hello"],
+        STICKER_PACKS[0]["9_youve_quacked_your_last"],
+        STICKER_PACKS[0]["10_quack_you_v2"],
+        STICKER_PACKS[0]["7_krak_if_you_dare"],
+    ]
+
     def __init__(
         self,
         bot: Bot,
@@ -181,9 +205,9 @@ class MDuckService:
     async def _handle_bot_is_added(self, event: types.ChatMemberUpdated) -> None:
         """Handle bot added."""
         await event.answer("🦆 *MooDuck* entered the chat.", parse_mode="Markdown")
-        await event.answer_sticker(
-            "CAACAgIAAxkBAAM6aWn2HORULYp5Uiioos8LjHZrAUIAAvYAA1advQr3204hQD6lijgE",
-        )
+
+        sticker_id = random.choice(self.WELCOME_STICKERS)
+        await event.answer_sticker(sticker_id)
         await self._bot.send_chat_action(
             chat_id=event.chat.id,
             action=ChatAction.TYPING,
@@ -202,6 +226,14 @@ class MDuckService:
         user = event.new_chat_member.user
         if user.id == self._bot.id:
             await self._handle_bot_is_added(event)
+
+    async def send_random_sticker(self, message: types.Message) -> None:
+        """Send a random sticker."""
+        random_pack = random.choice(self.STICKER_PACKS)
+        random_sticker_key, random_sticker = random.choice(list(random_pack.items()))
+        logger.info(f"Sending random sticker {random_sticker_key}")
+        random_sticker = random_pack[random_sticker_key]
+        await message.answer_sticker(random_sticker)
 
     async def handle_incoming_message(self, message: types.Message) -> None:
         """
@@ -243,7 +275,12 @@ class MDuckService:
                     self._max_queue_size,
                     message.chat.id,
                 )
+                await self.send_random_sticker(message)
                 return
+            else:
+                if random.choice([True, False]):
+                    await self.send_random_sticker(message)
+                    return
 
             context = contextvars.copy_context()
             self.message_queue.put_nowait((context, message))
@@ -257,9 +294,13 @@ class MDuckService:
                 response_probability,
             )
             if message.chat.type == ChatType.PRIVATE:
-                await message.answer(
-                    random.choice(self.PRIVATE_MESSAGES), parse_mode=ParseMode.MARKDOWN
-                )
+                if random.choice([True, False]):
+                    await message.answer(
+                        random.choice(self.PRIVATE_MESSAGES),
+                        parse_mode=ParseMode.MARKDOWN,
+                    )
+                else:
+                    await self.send_random_sticker(message)
 
     async def process_message_from_queue(self) -> None:
         """
