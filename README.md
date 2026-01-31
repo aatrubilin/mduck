@@ -36,6 +36,17 @@ curl -fsSL https://raw.githubusercontent.com/aatrubilin/mduck/master/install.sh 
 
 **Note for Windows users**: This command should be run in **WSL (Windows Subsystem for Linux)**.
 
+## Project Structure
+
+The project follows the following structure:
+
+- `src/mduck/containers/*.py`: Dependency-injector containers.
+- `src/mduck/repositories/*.py`: Data-access layer.
+- `src/mduck/routers/*.py`: API layer with FastAPI routers.
+- `src/mduck/schemas/*.py`: Pydantic schemas for data validation and serialization.
+- `src/mduck/services/*.py`: Business logic.
+- `src/config/settings.py`: Configuration using Pydantic-settings.
+
 ## Development Setup
 
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
@@ -54,6 +65,8 @@ poetry install
 
 ### Running the Application
 
+#### Webhook
+
 To run the webhook application locally, use the following command:
 
 ```bash
@@ -62,10 +75,49 @@ poetry run run-webhook --host 0.0.0.0 --port 8000 --reload --log-level info
 
 The webhook application will be available at `http://0.0.0.0:8000`. The `--reload` flag enables hot-reloading for development.
 
+**Arguments:**
+
+| Argument                | Description                                | Default                          |
+| ----------------------- | ------------------------------------------ |----------------------------------|
+| `--host`                | Host address to bind to.                   | `0.0.0.0`                        |
+| `--port`                | Port to listen on.                         | `8000`                           |
+| `--reload`              | Enable auto-reloading.                     | `False`                          |
+| `--log-level`           | Log level.                                 | `info`                           |
+| `--log-format`          | Log format.                                | `json`                           |
+| `--log-file`            | Log file path.                             | `None`                           |
+| `--forwarded-allow-ips` | Comma-separated list of trusted proxy IPs. | `192.168.1.0/24,192.168.2.0/24`  |
+
+#### Pooling
+
 To run the pooling application locally, use the following command:
 
 ```bash
 poetry run run-pooling --reload --log-level debug
+```
+
+**Arguments:**
+
+| Argument      | Description            | Default |
+| ------------- | ---------------------- | ------- |
+| `--log-level` | Log level.             | `info`  |
+| `--log-format`| Log format.            | `human` |
+| `--log-file`  | Log file path.         | `None`  |
+| `--reload`    | Enable auto-reloading. | `False` |
+
+### Running Tests
+
+To run tests and check coverage, use:
+
+```bash
+tox -e test
+```
+
+### Linting
+
+To lint the code using `ruff` and `mypy`, run:
+
+```bash
+tox -e lint
 ```
 
 ## Development
