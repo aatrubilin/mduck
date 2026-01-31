@@ -26,6 +26,7 @@ def _create_mock_message(
     mock_message.chat.type = chat_type
     mock_message.reply_to_message = None
     mock_message.answer = AsyncMock()
+    mock_message.answer_sticker = AsyncMock()
     return mock_message
 
 
@@ -80,103 +81,111 @@ async def test_other_user_is_added_does_nothing(
     mock_bot.send_chat_action.assert_not_called()
 
 
-# @pytest.mark.asyncio
-# @patch("random.random", return_value=0.5)
-# async def test_message_is_queued_on_probability_pass(
-#     mock_random: MagicMock, container: ApplicationContainer
-# ) -> None:
-#     """Test that a message is queued if the probability check passes."""
-#     # Arrange
-#     mduck_service: MDuckService = container.mduck()
-#     mduck_service._response_probability[ChatType.PRIVATE] = 0.6
-#     mock_message = _create_mock_message(chat_type=ChatType.PRIVATE)
-#
-#     # Act
-#     await mduck_service.handle_incoming_message(mock_message)
-#
-#     # Assert
-#     assert mduck_service.message_queue.qsize() == 1
-#     assert mock_message.chat.id in mduck_service.chats_with_queued_message
+@pytest.mark.asyncio
+@patch("random.choice", return_value=False)
+@patch("random.random", return_value=0.5)
+async def test_message_is_queued_on_probability_pass(
+    mock_random: MagicMock, mock_choice: MagicMock, container: ApplicationContainer
+) -> None:
+    """Test that a message is queued if the probability check passes."""
+    # Arrange
+    mduck_service: MDuckService = container.mduck()
+    mduck_service._response_probability[ChatType.PRIVATE] = 0.6
+    mock_message = _create_mock_message(chat_type=ChatType.PRIVATE)
+
+    # Act
+    await mduck_service.handle_incoming_message(mock_message)
+
+    # Assert
+    assert mduck_service.message_queue.qsize() == 1
+    assert mock_message.chat.id in mduck_service.chats_with_queued_message
 
 
-# @pytest.mark.asyncio
-# @patch("random.random", return_value=0.7)
-# async def test_message_is_skipped_on_probability_fail(
-#     mock_random: MagicMock, container: ApplicationContainer
-# ) -> None:
-#     """Test that a message is skipped if the probability check fails."""
-#     # Arrange
-#     mduck_service: MDuckService = container.mduck()
-#     mduck_service._response_probability[ChatType.PRIVATE] = 0.6
-#     mock_message = _create_mock_message(chat_type=ChatType.PRIVATE)
-#
-#     # Act
-#     await mduck_service.handle_incoming_message(mock_message)
-#
-#     # Assert
-#     assert mduck_service.message_queue.qsize() == 0
-#     mock_message.answer.assert_called_once()  # Should send a private message
+@pytest.mark.asyncio
+@patch("random.choice", return_value=True)
+@patch("random.random", return_value=0.7)
+async def test_message_is_skipped_on_probability_fail(
+    mock_random: MagicMock, mock_choice: MagicMock, container: ApplicationContainer
+) -> None:
+    """Test that a message is skipped if the probability check fails."""
+    # Arrange
+    mduck_service: MDuckService = container.mduck()
+    mduck_service._response_probability[ChatType.PRIVATE] = 0.6
+    mock_message = _create_mock_message(chat_type=ChatType.PRIVATE)
+
+    # Act
+    await mduck_service.handle_incoming_message(mock_message)
+
+    # Assert
+    assert mduck_service.message_queue.qsize() == 0
+    mock_message.answer.assert_called_once()  # Should send a private message
 
 
-# @pytest.mark.asyncio
-# async def test_reply_to_bot_is_always_queued(container: ApplicationContainer) -> None:
-#     """Test that a reply to the bot is always queued."""
-#     # Arrange
-#     mduck_service: MDuckService = container.mduck()
-#     mock_bot = container.gateways.bot()
-#
-#     mock_message = _create_mock_message(chat_type=ChatType.GROUP)
-#     mock_message.reply_to_message = types.Message(
-#         message_id=2,
-#         date=0,
-#         chat=mock_message.chat,
-#         from_user=types.User(id=mock_bot.id, is_bot=True, first_name="TestBot"),
-#     )
-#
-#     # Act
-#     await mduck_service.handle_incoming_message(mock_message)
-#
-#     # Assert
-#     assert mduck_service.message_queue.qsize() == 1
+@pytest.mark.asyncio
+@patch("random.choice", return_value=False)
+async def test_reply_to_bot_is_always_queued(
+    mock_choice: MagicMock, container: ApplicationContainer
+) -> None:
+    """Test that a reply to the bot is always queued."""
+    # Arrange
+    mduck_service: MDuckService = container.mduck()
+    mock_bot = container.gateways.bot()
+
+    mock_message = _create_mock_message(chat_type=ChatType.GROUP)
+    mock_message.reply_to_message = types.Message(
+        message_id=2,
+        date=0,
+        chat=mock_message.chat,
+        from_user=types.User(id=mock_bot.id, is_bot=True, first_name="TestBot"),
+    )
+
+    # Act
+    await mduck_service.handle_incoming_message(mock_message)
+
+    # Assert
+    assert mduck_service.message_queue.qsize() == 1
 
 
-# @pytest.mark.asyncio
-# async def test_mention_bot_is_always_queued(container: ApplicationContainer) -> None:
-#     """Test that a message mentioning the bot is always queued."""
-#     # Arrange
-#     mduck_service: MDuckService = container.mduck()
-#     mock_bot = container.gateways.bot()
-#     bot_info = AsyncMock(spec=types.User)
-#     bot_info.username = "TestBot"
-#     mock_bot.me.return_value = bot_info
-#
-#     mock_message = _create_mock_message(
-#         chat_type=ChatType.GROUP, text=f"Hello @{bot_info.username}"
-#     )
-#
-#     # Act
-#     await mduck_service.handle_incoming_message(mock_message)
-#
-#     # Assert
-#     assert mduck_service.message_queue.qsize() == 1
+@pytest.mark.asyncio
+@patch("random.choice", return_value=False)
+async def test_mention_bot_is_always_queued(
+    mock_choice: MagicMock, container: ApplicationContainer
+) -> None:
+    """Test that a message mentioning the bot is always queued."""
+    # Arrange
+    mduck_service: MDuckService = container.mduck()
+    mock_bot = container.gateways.bot()
+    bot_info = AsyncMock(spec=types.User)
+    bot_info.username = "TestBot"
+    mock_bot.me.return_value = bot_info
+
+    mock_message = _create_mock_message(
+        chat_type=ChatType.GROUP, text=f"Hello @{bot_info.username}"
+    )
+
+    # Act
+    await mduck_service.handle_incoming_message(mock_message)
+
+    # Assert
+    assert mduck_service.message_queue.qsize() == 1
 
 
-# @pytest.mark.asyncio
-# async def test_message_not_queued_if_queue_full(
-#     container: ApplicationContainer,
-# ) -> None:
-#     """Test that a message is not queued if the queue is full."""
-#     # Arrange
-#     mduck_service: MDuckService = container.mduck()
-#     mduck_service._max_queue_size = 0  # Set queue size to 0 to simulate full queue
-#     mock_message = _create_mock_message(chat_type=ChatType.PRIVATE)
-#
-#     # Act
-#     await mduck_service.handle_incoming_message(mock_message)
-#
-#     # Assert
-#     assert mduck_service.message_queue.qsize() == 0
-#     mock_message.answer.assert_not_called()
+@pytest.mark.asyncio
+async def test_message_not_queued_if_queue_full(
+    container: ApplicationContainer,
+) -> None:
+    """Test that a message is not queued if the queue is full."""
+    # Arrange
+    mduck_service: MDuckService = container.mduck()
+    mduck_service._max_queue_size = 0  # Set queue size to 0 to simulate full queue
+    mock_message = _create_mock_message(chat_type=ChatType.PRIVATE)
+
+    # Act
+    await mduck_service.handle_incoming_message(mock_message)
+
+    # Assert
+    assert mduck_service.message_queue.qsize() == 0
+    mock_message.answer.assert_not_called()
 
 
 @pytest.mark.asyncio
