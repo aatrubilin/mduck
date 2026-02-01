@@ -23,6 +23,15 @@ class Ollama(BaseSettings):
     prompts_dir_path: str = str(Path(__file__).parent.parent / "prompts")
 
 
+class Redis(BaseSettings):
+    """Redis settings."""
+
+    host: str = "localhost"
+    port: int = 6379
+    db: int = 0
+    password: str | None = None
+
+
 class _TelegramWebhook(BaseSettings):
     """Telegram webhook settings."""
 
@@ -54,6 +63,7 @@ class Settings(BaseSettings):
     mduck: MDuckSettings = MDuckSettings()
     ollama: Ollama = Ollama()
     tg: Telegram = Telegram()
+    redis: Redis = Redis()
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).parent / ".env",
