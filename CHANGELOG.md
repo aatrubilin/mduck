@@ -2,6 +2,30 @@
 
 <!-- version list -->
 
+## v1.16.0 (2026-02-01)
+
+### Chores
+
+- **ci**: Update coverage badge
+  ([`8befb49`](https://github.com/aatrubilin/mduck/commit/8befb499c2108b09be09158ecbd28e0f31e8f076))
+
+### Documentation
+
+- Update README with development info and params
+  ([`85d03bc`](https://github.com/aatrubilin/mduck/commit/85d03bc509b24af1e6616377bb95c624f5161a53))
+
+### Features
+
+- Add tests for log context middleware
+  ([`5032f6d`](https://github.com/aatrubilin/mduck/commit/5032f6d2d41b65bcf3a91705e3ed971fb1d78b7e))
+
+- Add tests for sticker handler
+  ([`edbe0c2`](https://github.com/aatrubilin/mduck/commit/edbe0c2fda920de5f25ae589d2daecd7409049eb))
+
+- Fix failing tests in mduck service
+  ([`53937a6`](https://github.com/aatrubilin/mduck/commit/53937a6fa68c3c121335a45c21ebf69316ecf979))
+
+
 ## v1.15.0 (2026-01-29)
 
 ### Chores
