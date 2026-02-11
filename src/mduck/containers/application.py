@@ -33,6 +33,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
         MDuckService,
         bot=gateways.bot,
         ollama_repository=gateways.ollama,
+        redis=gateways.redis,
         response_probability_private=config.mduck.response_probability_private,
         response_probability_group=config.mduck.response_probability_group,
         response_probability_supergroup=config.mduck.response_probability_supergroup,

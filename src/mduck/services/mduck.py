@@ -1,12 +1,13 @@
 import asyncio
-import contextvars
 import logging
 import random
 
 from aiogram import Bot, types
 from aiogram.enums import ChatAction, ChatType, ParseMode
+from redis.asyncio import Redis
 
 from mduck.repositories.ollama import OllamaRepository
+from mduck.schemas.queue import MessagePayload, QueueMessage
 
 logger = logging.getLogger(__name__)
 
@@ -153,6 +154,7 @@ class MDuckService:
         self,
         bot: Bot,
         ollama_repository: OllamaRepository,
+        redis: Redis,
         response_probability_private: float = 0.2,
         response_probability_group: float = 0.01,
         response_probability_supergroup: float = 0.001,
@@ -167,16 +169,15 @@ class MDuckService:
         """
         self._bot = bot
         self._ollama_repository = ollama_repository
+        self._redis = redis
         self._response_probability = {
             ChatType.PRIVATE.value: response_probability_private,
             ChatType.GROUP.value: response_probability_group,
             ChatType.SUPERGROUP.value: response_probability_supergroup,
         }
-        self.message_queue: asyncio.Queue[tuple[contextvars.Context, types.Message]] = (
-            asyncio.Queue()
-        )
-        self.chats_with_queued_message: set[int] = set()
         self._max_queue_size = max_queue_size
+        self._message_queue_key = "mduck:message_queue"
+        self._chats_in_queue_key = "mduck:chats_in_queue"
         logger.info(
             "MDuckService initialized with probability: %s, max_queue_size: %s",
             self._response_probability,
@@ -187,7 +188,7 @@ class MDuckService:
         self,
         chat_id: int,
         stop_event: asyncio.Event,
-        interval: int = 7,
+        interval: int = 30,
     ) -> None:
         """Send 'typing' chat action periodically until stop_event is set."""
         while not stop_event.is_set():
@@ -244,7 +245,10 @@ class MDuckService:
 
         :param message: The incoming aiogram Message object.
         """
-        if message.chat.id in self.chats_with_queued_message:
+        is_in_queue = await self._redis.sismember(  # type: ignore[misc]
+            self._chats_in_queue_key, str(message.chat.id)
+        )
+        if is_in_queue:
             logger.debug(
                 "Chat %s already has a message in queue, skipping.", message.chat.id
             )
@@ -255,11 +259,9 @@ class MDuckService:
         bot_info: types.User = await self._bot.me()
         if f"@{bot_info.username}" in message.text or (
             message.reply_to_message
-            and message.reply_to_message.text
             and message.reply_to_message.from_user
             and message.reply_to_message.from_user.id == self._bot.id
         ):
-            logger.info("Reply to bot or tag bot")
             response_probability = 1.0
         else:
             response_probability = self._response_probability.get(
@@ -268,7 +270,8 @@ class MDuckService:
 
         probability = random.random()
         if probability < response_probability:
-            if len(self.chats_with_queued_message) >= self._max_queue_size:
+            queue_size = await self._redis.scard(self._chats_in_queue_key)  # type: ignore[misc]
+            if queue_size >= self._max_queue_size:
                 logger.warning(
                     "Message queue is full (%s messages), "
                     "skipping message from chat %s.",
@@ -282,9 +285,18 @@ class MDuckService:
                     await self.send_random_sticker(message)
                     return
 
-            context = contextvars.copy_context()
-            self.message_queue.put_nowait((context, message))
-            self.chats_with_queued_message.add(message.chat.id)
+            payload = MessagePayload(
+                chat_id=message.chat.id,
+                message_id=message.message_id,
+                text=message.text,
+                chat_type=message.chat.type,
+            )
+            queue_message = QueueMessage(message=payload)
+
+            await self._redis.lpush(  # type: ignore[misc]
+                self._message_queue_key, queue_message.model_dump_json()
+            )
+            await self._redis.sadd(self._chats_in_queue_key, str(message.chat.id))  # type: ignore[misc]
             logger.info("Message from chat %s queued for processing.", message.chat.id)
         else:
             logger.debug(
@@ -308,21 +320,20 @@ class MDuckService:
 
         This method is intended to be run as a continuous background task.
         """
-        context, message = await self.message_queue.get()
+        try:
+            _key, raw_message = await self._redis.brpop(  # type: ignore[misc]
+                [self._message_queue_key]
+            )
+            queue_message = QueueMessage.model_validate_json(raw_message)
 
-        def sync_runner() -> asyncio.Task[None]:
-            # This function is run by context.run, so it executes
-            # within the captured context.
-            # asyncio.create_task will then inherit this context.
-            return asyncio.create_task(self._process_message(message))
+            queue_message.context.set_contextvars()
 
-        # context.run executes the sync function, which creates a task
-        # that now runs with the correct context.
-        task = context.run(sync_runner)
-        await task  # Wait for the task to complete.
+            await self._process_message(queue_message.message)
+        except Exception as e:
+            logger.error("Error processing message from queue: %s", e, exc_info=True)
 
-    async def _process_message(self, message: types.Message) -> None:
-        chat_id = message.chat.id
+    async def _process_message(self, message: MessagePayload) -> None:
+        chat_id = message.chat_id
         logger.info("Processing message from chat %s from queue.", chat_id)
 
         event = asyncio.Event()
@@ -364,12 +375,13 @@ class MDuckService:
                     f"Prompt: {template}"
                 )
 
-                if message.chat.type == ChatType.PRIVATE:
+                if message.chat_type == ChatType.PRIVATE:
                     text += f"\n\n```metadata\n{meta}```"
 
                 # Send the response
-                await message.answer(
-                    text,
+                await self._bot.send_message(
+                    chat_id=chat_id,
+                    text=text,
                     parse_mode=ParseMode.MARKDOWN,
                     reply_to_message_id=message.message_id,
                 )
@@ -382,8 +394,9 @@ class MDuckService:
                 "Error processing message in chat %s: %s", chat_id, e, exc_info=True
             )
             try:
-                await message.answer(
-                    "Quack! *ERROR* 0xQUACK\n"
+                await self._bot.send_message(
+                    chat_id=chat_id,
+                    text="Quack! *ERROR* 0xQUACK\n"
                     "Duck OS has temporarily lost control of the feathers.\n"
                     "Suggested fixes:\n"
                     "  • flap wings aggressively\n"
@@ -391,6 +404,7 @@ class MDuckService:
                     "  • wait until I paddle back to shore\n"
                     "Quaaaack… restarting in wet mode ♡",
                     reply_to_message_id=message.message_id,
+                    parse_mode=ParseMode.MARKDOWN,
                 )
             except Exception as e2:
                 logger.error(
@@ -401,6 +415,5 @@ class MDuckService:
                 )
         finally:
             event.set()
-            self.chats_with_queued_message.remove(chat_id)
-            self.message_queue.task_done()
+            await self._redis.srem(self._chats_in_queue_key, str(chat_id))  # type: ignore[misc]
             logger.debug("Chat %s removed from queued messages set.", chat_id)

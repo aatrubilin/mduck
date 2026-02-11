@@ -78,10 +78,11 @@ async def start_pooling(container: ApplicationContainer | None = None) -> None:
     dp: Dispatcher = container.dispatcher()
     bot: Bot = container.gateways.bot()
 
-    mduck: MDuckService = container.mduck()
+    mduck: MDuckService = await container.mduck()  # type: ignore[misc]
     asyncio.create_task(run_mduck_processor(mduck))
     logger.info("MDuckService background processor started.")
 
+    await bot.delete_webhook()
     await dp.start_polling(bot)
 
 

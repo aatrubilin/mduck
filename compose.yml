@@ -31,6 +31,18 @@ services:
       ollama:
         condition: service_healthy
 
+  redis:
+    image: redis:alpine
+    networks:
+      - mduck-net
+    volumes:
+      - ./data/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   mduck:
     image: ghcr.io/aatrubilin/mduck:latest
     user: root
@@ -44,6 +56,8 @@ services:
       download-model:
         condition: service_completed_successfully
       ollama:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     volumes:
       - ./data/logs:/var/log/mduck

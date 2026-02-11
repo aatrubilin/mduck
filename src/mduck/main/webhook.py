@@ -14,7 +14,7 @@ from mduck.routers import healthcheck, webhook, whoami
 from mduck.services.mduck import MDuckService
 from mduck.version import __version__
 
-logger = logging.getLogger("mduck.main.webhook")
+logger = logging.getLogger(__name__)
 
 
 async def run_mduck_processor(mduck: MDuckService) -> None:
@@ -46,7 +46,7 @@ def create_app(
         logger.info("On startup event...")
 
         # Start background task
-        mduck: MDuckService = container.mduck()
+        mduck: MDuckService = await container.mduck()  # type: ignore[misc]
         asyncio.create_task(run_mduck_processor(mduck))
         logger.info("MDuckService background processor started.")
 
