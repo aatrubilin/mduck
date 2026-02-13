@@ -2,6 +2,60 @@
 
 <!-- version list -->
 
+## v1.17.0 (2026-02-13)
+
+### Bug Fixes
+
+- Tests
+  ([`9dd70e0`](https://github.com/aatrubilin/mduck/commit/9dd70e063b0c3555df3905e0ecb5714bf39ec914))
+
+### Chores
+
+- Update lock
+  ([`5e13849`](https://github.com/aatrubilin/mduck/commit/5e138494417fa7acdd6bb8c3ef721bba90a223f3))
+
+- **ci**: Update coverage badge
+  ([`4dfd24d`](https://github.com/aatrubilin/mduck/commit/4dfd24dd1f5ebf689b3e2702974dac536457aec8))
+
+- **deps**: Bump fastapi in the python-dependencies group
+  ([`bb45068`](https://github.com/aatrubilin/mduck/commit/bb45068ddeb6442df8e35c4413132976d479b051))
+
+- **deps**: Bump fastapi in the python-dependencies group
+  ([`974a04c`](https://github.com/aatrubilin/mduck/commit/974a04c6daad189f464dbbf68e89d757d9bf781f))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`dd084d1`](https://github.com/aatrubilin/mduck/commit/dd084d1d5ef7e99dcf4598859ad3c62e68246b96))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`9c03db3`](https://github.com/aatrubilin/mduck/commit/9c03db371dead0ea9ea7b74664cc61588511803d))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`7d0b302`](https://github.com/aatrubilin/mduck/commit/7d0b302a6e043aa9642d63e5732f8b40df4d9ec1))
+
+- **deps**: Bump the python-dependencies group with 3 updates
+  ([`b52ad5c`](https://github.com/aatrubilin/mduck/commit/b52ad5c71141037088be81b08d9586bf91c5e928))
+
+- **deps**: Bump the python-dependencies group with 3 updates
+  ([`4430e9c`](https://github.com/aatrubilin/mduck/commit/4430e9c74b8ceb246edf10720600e1e5dd7253f0))
+
+- **deps-dev**: Bump commitizen in the python-dependencies group
+  ([`c2d15a3`](https://github.com/aatrubilin/mduck/commit/c2d15a33df14c05cae4aa3e8ec3862270bbd07a0))
+
+- **deps-dev**: Bump pillow from 12.1.0 to 12.1.1
+  ([`b7ae086`](https://github.com/aatrubilin/mduck/commit/b7ae0862bec6803083b67a13c501988c1e7495ae))
+
+- **deps-dev**: Bump the python-dependencies group with 3 updates
+  ([`4e42f64`](https://github.com/aatrubilin/mduck/commit/4e42f6425281d186d4434e83f8645cb25adfb0ce))
+
+### Features
+
+- **queue**: Implement Redis-based message queuing for MDuckService
+  ([`ab71c77`](https://github.com/aatrubilin/mduck/commit/ab71c770a98637908d9e6d2d6ad07d4b00bd5a1e))
+
+- **redis**: Add Redis repository and integration
+  ([`8d6611d`](https://github.com/aatrubilin/mduck/commit/8d6611d9cc52928c91466f686b6e7aeefcb57475))
+
+
 ## v1.16.0 (2026-02-01)
 
 ### Chores
