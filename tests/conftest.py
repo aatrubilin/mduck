@@ -1,8 +1,10 @@
 import json
+import threading
 from typing import Iterator
 from unittest.mock import MagicMock
 
 import aiogram
+import fakeredis
 import httpx
 import pytest
 from fastapi.testclient import TestClient
@@ -12,6 +14,7 @@ from config.settings import (
     Environment,
     MDuckSettings,
     Ollama,
+    Redis,
     Settings,
     Telegram,
     _TelegramWebhook,
@@ -20,9 +23,22 @@ from mduck.containers.application import ApplicationContainer
 from mduck.main.webhook import create_app
 
 
+@pytest.fixture(scope="session", autouse=True)
+def fake_redis_server() -> Iterator[tuple[str, int]]:
+    """Run fake redis server on a thread."""
+    server = fakeredis.TcpFakeServer(("localhost", 6379))
+    t = threading.Thread(target=server.serve_forever, daemon=True)
+    t.start()
+    yield server.server_address
+    server.shutdown()
+    server.server_close()
+    t.join()
+
+
 @pytest.fixture
-def settings() -> Settings:
+def settings(fake_redis_server: tuple[str, int]) -> Settings:
     """Return a test settings object."""
+    redis_host, redis_port = fake_redis_server
     return Settings(
         environment=Environment.DEV,
         mduck=MDuckSettings(
@@ -44,6 +60,12 @@ def settings() -> Settings:
                 key="test_key",
                 secret="test_secret",
             ),
+        ),
+        redis=Redis(
+            host=redis_host,
+            port=redis_port,
+            db=0,
+            password=None,
         ),
     )
 

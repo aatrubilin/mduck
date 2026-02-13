@@ -29,14 +29,13 @@ class RedisResource(resources.AsyncResource[redis.Redis]):
             An initialized Redis client.
 
         """
-        pool = redis.ConnectionPool(
+        client = redis.Redis(
             host=host,
             port=port,
             db=db,
             password=password,
             decode_responses=True,
         )
-        client = redis.Redis(connection_pool=pool)
         logger.info("Connecting to Redis at %s:%s, db=%d", host, port, db)
         try:
             if await client.ping():  # type: ignore[misc]
