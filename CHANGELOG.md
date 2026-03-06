@@ -2,6 +2,37 @@
 
 <!-- version list -->
 
+## v1.18.0 (2026-03-06)
+
+### Chores
+
+- **deps**: Bump the github-actions-dependencies group across 1 directory with 3 updates
+  ([`a31db11`](https://github.com/aatrubilin/mduck/commit/a31db118e8e2a58ca7cf5789c05c4c842c0694ac))
+
+- **deps**: Bump the python-dependencies group across 1 directory with 4 updates
+  ([`2271f27`](https://github.com/aatrubilin/mduck/commit/2271f27196a620fa2f9d1e5f4919629a50a7b7e0))
+
+- **deps**: Bump the python-dependencies group across 1 directory with 7 updates
+  ([`e599370`](https://github.com/aatrubilin/mduck/commit/e5993706a18a7ffdb556bf62924a7a7c674c3e7a))
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`42f887c`](https://github.com/aatrubilin/mduck/commit/42f887cdc29353b13994e2c93b037aefdd55bda6))
+
+- **deps**: Bump the python-dependencies group with 5 updates
+  ([`3ad823c`](https://github.com/aatrubilin/mduck/commit/3ad823c773f31aee5c1e83a20a0e87cc7cdf8c85))
+
+- **deps-dev**: Bump the python-dependencies group across 1 directory with 2 updates
+  ([`b1cc857`](https://github.com/aatrubilin/mduck/commit/b1cc8570e7810546c42e4bb5daba59b429f69967))
+
+- **deps-dev**: Bump the python-dependencies group across 1 directory with 2 updates
+  ([`43d9834`](https://github.com/aatrubilin/mduck/commit/43d9834f8dcf6eb3456049ab824c360cca7a86ae))
+
+### Features
+
+- Add kiss sticker
+  ([`70991f9`](https://github.com/aatrubilin/mduck/commit/70991f9db03a2f2cb8faf0ba0e809ecc949154d7))
+
+
 ## v1.17.0 (2026-02-13)
 
 ### Bug Fixes
