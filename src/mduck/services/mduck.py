@@ -138,6 +138,7 @@ class MDuckService:
             "8_shut_it": "CAACAgIAAxkBAAPhaXuxnbwEA8vC50aNBk-xuSDPWA0AAlGgAAJqx9lLiEiTaTsF7m44BA",  # noqa: E501
             "9_youve_quacked_your_last": "CAACAgIAAxkBAAPjaXuxqKXaSPDn_oqR5qJrDLr3ThUAAsaOAAL7xeFLJzkAAcSOrNveOAQ",  # noqa: E501
             "10_quack_you_v2": "CAACAgIAAxkBAAPlaXuxtUxHwmvpKx_26fxI8j0h-5gAAnWRAAJ3rOFLaH-EREb78to4BA",  # noqa: E501
+            "11_kiss": "CAACAgIAAxkBAAIBuWmrH6nMmz7tiacJBEogVpMmnLGOAALxjgAC0hxRSZSwsnWmF4ayOgQ",  # noqa: E501
         }
     ]
 
@@ -148,6 +149,7 @@ class MDuckService:
         STICKER_PACKS[0]["9_youve_quacked_your_last"],
         STICKER_PACKS[0]["10_quack_you_v2"],
         STICKER_PACKS[0]["7_krak_if_you_dare"],
+        STICKER_PACKS[0]["11_kiss"],
     ]
 
     def __init__(
