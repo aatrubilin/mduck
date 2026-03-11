@@ -139,6 +139,7 @@ class MDuckService:
             "9_youve_quacked_your_last": "CAACAgIAAxkBAAPjaXuxqKXaSPDn_oqR5qJrDLr3ThUAAsaOAAL7xeFLJzkAAcSOrNveOAQ",  # noqa: E501
             "10_quack_you_v2": "CAACAgIAAxkBAAPlaXuxtUxHwmvpKx_26fxI8j0h-5gAAnWRAAJ3rOFLaH-EREb78to4BA",  # noqa: E501
             "11_kiss": "CAACAgIAAxkBAAIBuWmrH6nMmz7tiacJBEogVpMmnLGOAALxjgAC0hxRSZSwsnWmF4ayOgQ",  # noqa: E501
+            "12_shisha": "CAACAgIAAxkBAAICJmmxC5NnklgJNM--HOGXAw0pkS3dAAI0mgACWSmJSX7HX8GnIdz1OgQ",  # noqa: E501
         }
     ]
 
