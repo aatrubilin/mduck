@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.19.0 (2026-03-11)
+
+### Chores
+
+- **deps**: Bump the python-dependencies group with 2 updates
+  ([`94cc5f4`](https://github.com/aatrubilin/mduck/commit/94cc5f428da023fc5948a71ee1eccfcd62e1a2a5))
+
+### Features
+
+- Add shisha sticker
+  ([`11cdb59`](https://github.com/aatrubilin/mduck/commit/11cdb592266f1f4ce88beb1bbaa20b8c1bcb1ec7))
+
+
 ## v1.18.0 (2026-03-06)
 
 ### Chores
