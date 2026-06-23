@@ -13,7 +13,7 @@ jobs:
       contents: write
     steps:
       - name: 🛒 Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: 🐍 Set up Python
         uses: actions/setup-python@v6
         with:
@@ -27,7 +27,7 @@ jobs:
           poetry export -f requirements.txt --output requirements.txt --without-hashes
       - name: 💾 Cache dependencies
         id: cache-dependencies
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/requirements.txt') }}
@@ -63,7 +63,7 @@ jobs:
       packages: write # to be able to upload packages to ghcr.io
     steps:
       - name: 🛒 Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0 # needed by semantic-release
       - name: 🔄 Synchronize with remote master
@@ -81,7 +81,7 @@ jobs:
           poetry export -f requirements.txt --output requirements.txt --without-hashes
       - name: 💾 Cache dependencies
         id: cache-dependencies
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-${{ hashFiles('**/requirements.txt') }}
